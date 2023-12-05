@@ -1,0 +1,38 @@
+name: Deploy Resume
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'index.html'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    # Update Last Update
+    - name: Update last updated date
+      run: |
+        DATE=$(date +'%d/%m/%Y')
+        sed -i "s/_lastupdate_/$DATE/g" index.html
+
+    # Clear Storage Account
+    - name: 'Empty Storage Account'
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+            az storage blob delete-batch --account-name  ${{ secrets.STORAGE_ACCOUNT_NAME }} --source \$web --auth-mode login
+
+    # Deploy to the Azure Storage Account
+    - name: 'Deploy to Azure Storage'
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az storage blob upload-batch -s <SOURCE_DIR> -d \$web --account-name  ${{ secrets.STORAGE_ACCOUNT_NAME }} --auth-mode login
+
+      env:
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+
