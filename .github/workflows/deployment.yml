@@ -23,6 +23,8 @@ jobs:
       with:
         inlineScript: |
             az storage blob delete-batch --account-name  ${{ secrets.STORAGE_ACCOUNT_NAME }} --source \$web --auth-mode login
+      env:
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
     # Deploy to the Azure Storage Account
     - name: 'Deploy to Azure Storage'
