@@ -10,12 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+       path: ./site
 
     # Update Last Update
     - name: Update last updated date
       shell: pwsh
       run: |
-        (Get-Content ./index.html).Replace('_lastupdate_',$(Get-Date -Format 'dd/MM/yyyy')) | Set-Content ./index.html
+        (Get-Content ./site/index.html).Replace('_lastupdate_',$(Get-Date -Format 'dd/MM/yyyy')) | Set-Content ./site/index.html
 
     - name: Azure Login
       uses: azure/login@v1
@@ -34,5 +36,5 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az storage blob upload-batch -s . -d \$web --account-name  ${{ secrets.STORAGE_ACCOUNT_NAME }} --auth-mode login
+          az storage blob upload-batch -s ./site -d \$web --account-name  ${{ secrets.STORAGE_ACCOUNT_NAME }} --auth-mode login
 
