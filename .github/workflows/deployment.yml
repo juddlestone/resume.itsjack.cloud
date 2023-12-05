@@ -17,22 +17,22 @@ jobs:
       run: |
         (Get-Content ./index.html).Replace('_lastupdate_',$(Get-Date -Format 'dd/MM/yyyy')) | Set-Content ./index.html
 
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
     # Clear Storage Account
     - name: 'Empty Storage Account'
       uses: azure/CLI@v1
       with:
         inlineScript: |
             az storage blob delete-batch --account-name  ${{ secrets.STORAGE_ACCOUNT_NAME }} --source \$web --auth-mode login
-      env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
     # Deploy to the Azure Storage Account
     - name: 'Deploy to Azure Storage'
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az storage blob upload-batch -s <SOURCE_DIR> -d \$web --account-name  ${{ secrets.STORAGE_ACCOUNT_NAME }} --auth-mode login
-
-      env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          az storage blob upload-batch -s . -d \$web --account-name  ${{ secrets.STORAGE_ACCOUNT_NAME }} --auth-mode login
 
