@@ -16,8 +16,7 @@ jobs:
     # Update Last Update
     - name: Update last updated date
       run: |
-        DATE=$(date +'%d/%m/%Y')
-        sed -i "s/_lastupdate_/$DATE/g" index.html
+        sed -i "s/_lastupdate_/$(date +'%d/%m/%Y')/g" index.html
 
     # Clear Storage Account
     - name: 'Empty Storage Account'
