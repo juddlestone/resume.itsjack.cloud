@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'index.html'
 
 jobs:
   build-and-deploy:
@@ -15,8 +13,9 @@ jobs:
 
     # Update Last Update
     - name: Update last updated date
+      shell: pwsh
       run: |
-        sed -i "s/_lastupdate_/$(date +'%d/%m/%Y')/g" index.html
+        (Get-Content ./index.html).Replace('_lastupdate_',$(Get-Date -Format 'dd/MM/yyyy')) | Set-Content ./index.html
 
     # Clear Storage Account
     - name: 'Empty Storage Account'
