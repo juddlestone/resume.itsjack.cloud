@@ -1,3 +1,8 @@
 body {
     background: linear-gradient(135deg, #b8c6db 0%, #f5f7fa 50%, #b8c6db 100%);
 }
+
+img {
+    height: auto;
+    width: 6rem;
+  }
