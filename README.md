@@ -2,8 +2,6 @@
 The Cloud Resume Challenge is an innovative project designed to demonstrate cloud skills in a real-world scenario. In this Azure edition, I've utilized various Azure services to host and manage my online resume.
 
 ### 📃 Architecture 
-<br>
-
 ![Architecture Diagram](./imgs/diagram.png)
 
 ### 🔧 Components
