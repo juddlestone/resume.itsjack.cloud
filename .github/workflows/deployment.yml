@@ -42,4 +42,3 @@ jobs:
       with:
         inlineScript: |
           az storage blob upload-batch -s ./site -d \$web --account-name  ${{ secrets.STORAGE_ACCOUNT_NAME }} --auth-mode login
-
