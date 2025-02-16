@@ -11,11 +11,11 @@ locals {
   storage_table_name    = module.naming.storage_table.value
 
   frontdoor_profile_name      = module.naming.frontdoor.value
-  frontdoor_origin_group_name = "${custom_domain_resource_friendly}-origin-group"
-  frontdoor_origin_name       = "${custom_domain_resource_friendly}-origin"
-  frontdoor_endpoint_name     = "${custom_domain_resource_friendly}-endpoint"
-  frontdoor_rule_name         = "${custom_domain_resource_friendly}-rule-set"
-  frontdoor_route_name        = "${customer_domain_resource_friendly}-route"
+  frontdoor_origin_group_name = "${local.custom_domain_resource_friendly}-origin-group"
+  frontdoor_origin_name       = "${local.custom_domain_resource_friendly}-origin"
+  frontdoor_endpoint_name     = "${local.custom_domain_resource_friendly}-endpoint"
+  frontdoor_rule_name         = "${local.custom_domain_resource_friendly}-rule-set"
+  frontdoor_route_name        = "${local.custom_domain_resource_friendly}-route"
 
   tags = {
     "Environment"        = upper(local.environment)
