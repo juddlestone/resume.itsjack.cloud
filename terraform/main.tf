@@ -3,6 +3,9 @@ module "naming" {
   suffix = ["cloudresume", local.environment]
 }
 
+data "azurerm_client_config" "current" {
+}
+
 resource "azurerm_resource_group" "resource_group" {
   name     = local.resource_group_name
   location = local.location
@@ -30,6 +33,12 @@ resource "azurerm_storage_account_static_website" "static_site" {
 resource "azurerm_storage_table" "storage_table" {
   name                 = local.storage_table_name
   storage_account_name = azurerm_storage_account.storage_account.name
+}
+
+resource "azurerm_role_assignment" "storage_account_contributor" {
+  scope                = azurerm_storage_account.storage_account.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
 }
 
 resource "azurerm_service_plan" "service_plan" {

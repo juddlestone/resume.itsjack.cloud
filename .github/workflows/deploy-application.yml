@@ -35,15 +35,15 @@ jobs:
         subscription-id: ${{ secrets.BACKEND_AZURE_SUBSCRIPTION_ID }}
 
     # Clear Storage Account
-    - name: 'Empty Storage Account'
+    - name: 'Empty the web container'
       uses: azure/CLI@v1
       with:
         inlineScript: |
-            az storage blob delete-batch --account-name  ${{ secrets.BACKEND_STORAGE_ACCOUNT_NAME }} --source \$web --auth-mode login
+            az storage blob delete-batch --account-name  ${{ secrets.SITE_STORAGE_ACCOUNT_NAME }} --source \$web --auth-mode login
 
     # Deploy to the Azure Storage Account
     - name: 'Deploy to Azure Storage'
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az storage blob upload-batch -s ./site -d \$web --account-name  ${{ secrets.BACKEND_STORAGE_ACCOUNT_NAME }} --auth-mode login
+          az storage blob upload-batch -s ./site -d \$web --account-name  ${{ secrets.SITE_STORAGE_ACCOUNT_NAME }} --auth-mode login
