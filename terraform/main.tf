@@ -32,15 +32,6 @@ resource "azurerm_storage_table" "storage_table" {
   storage_account_name = azurerm_storage_account.storage_account.name
 }
 
-resource "azurerm_storage_blob" "storage_blob" {
-  name                   = "index.html"
-  storage_account_name   = azurerm_storage_account.storage_account.name
-  storage_container_name = "$web"
-  type                   = "Block"
-  source                 = "${path.module}/../index.html"
-  content_type           = "text/html"
-}
-
 resource "azurerm_service_plan" "service_plan" {
   name                = local.app_service_plan_name
   resource_group_name = azurerm_resource_group.resource_group.name
