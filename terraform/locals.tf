@@ -10,7 +10,7 @@ locals {
   storage_account_name  = module.naming.storage_account.name_unique
   storage_table_name    = module.naming.storage_table.name
 
-  frontdoor_profile_name      = module.naming.frontdoor.value
+  frontdoor_profile_name      = module.naming.frontdoor.name
   frontdoor_origin_group_name = "${local.custom_domain_resource_friendly}-origin-group"
   frontdoor_origin_name       = "${local.custom_domain_resource_friendly}-origin"
   frontdoor_endpoint_name     = "${local.custom_domain_resource_friendly}-endpoint"
