@@ -38,6 +38,7 @@ resource "azurerm_storage_blob" "storage_blob" {
   storage_container_name = "$web"
   type                   = "Block"
   source                 = "${path.module}/../index.html"
+  content_type           = "text/html"
 }
 
 resource "azurerm_service_plan" "service_plan" {
