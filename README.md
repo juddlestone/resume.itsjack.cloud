@@ -13,10 +13,3 @@ The Cloud Resume Challenge is a project designed to demonstrate cloud skills in 
 
 ### 📝 Learnings
 This project was previously hosted and deployed through Azure DevOps, utilizing Azure Repos and Pipelines. Migrating this to Github and Github Actions proved a great learning experience, better understanding the Github Actions syntax and how it handles secrets. 
-
-### 🔮 Future Improvements
-- Implement a built-in blog section.
-- Enhancing the UI/UX design.
-- Potentially integrate more Azure services for advanced functionalities.
-
-
