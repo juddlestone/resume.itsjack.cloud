@@ -8,7 +8,7 @@ locals {
   function_app_name     = module.naming.function_app.name
   resource_group_name   = module.naming.resource_group.name
   storage_account_name  = module.naming.storage_account.name_unique
-  storage_table_name    = "stt-resume-visitor-count"
+  storage_table_name    = replace(module.naming.storage_table.name, "-", "")
 
   frontdoor_profile_name      = module.naming.frontdoor.name
   frontdoor_origin_group_name = "${local.custom_domain_resource_friendly}-origin-group"
