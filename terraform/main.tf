@@ -107,7 +107,7 @@ resource "azurerm_cdn_frontdoor_rule_set" "frontdoor_rule_set" {
 }
 
 resource "azurerm_cdn_frontdoor_custom_domain" "frontdoor_custom_domain" {
-  name                     = local.custom_domain
+  name                     = local.custom_domain_resource_friendly
   cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.frontdoor_profile.id
   host_name                = local.custom_domain
 

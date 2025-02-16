@@ -14,7 +14,7 @@ locals {
   frontdoor_origin_group_name = "${local.custom_domain_resource_friendly}-origin-group"
   frontdoor_origin_name       = "${local.custom_domain_resource_friendly}-origin"
   frontdoor_endpoint_name     = "${local.custom_domain_resource_friendly}-endpoint"
-  frontdoor_rule_name         = "${local.custom_domain_resource_friendly}-rule-set"
+  frontdoor_rule_name         = replace("${local.custom_domain_resource_friendly}ruleset", "-", "")
   frontdoor_route_name        = "${local.custom_domain_resource_friendly}-route"
 
   tags = {
