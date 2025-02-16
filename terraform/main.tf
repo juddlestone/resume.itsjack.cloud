@@ -89,11 +89,11 @@ resource "azurerm_cdn_frontdoor_origin" "frontdoor_origin" {
   enabled                        = true
   certificate_name_check_enabled = true
 
-  host_name          = azurerm_storage_account.storage_account.primary_blob_host
-  http_port          = 80
-  https_port         = 443
-  priority           = 1
-  weight             = 1000
+  host_name  = azurerm_storage_account.storage_account.primary_blob_host
+  http_port  = 80
+  https_port = 443
+  priority   = 1
+  weight     = 1000
 }
 
 resource "azurerm_cdn_frontdoor_endpoint" "frontdoor_endpoint" {

@@ -1,8 +1,8 @@
 locals {
-  custom_domain                   = "resume.itsjack.cloud"
+  custom_domain                   = var.custom_domain
   custom_domain_resource_friendly = replace(local.custom_domain, ".", "-")
-  environment                     = "dev"
-  location                        = "uksouth"
+  environment                     = var.environment
+  location                        = var.location
 
   app_service_plan_name = module.naming.app_service_plan.name
   function_app_name     = module.naming.function_app.name
