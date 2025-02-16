@@ -89,6 +89,9 @@ jobs:
 
   deploy:      
     name: Deploy
+    defaults:
+        run:
+          working-directory: terraform
     runs-on: ubuntu-latest
     env:
       ARM_USE_OIDC: true
