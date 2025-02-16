@@ -116,4 +116,9 @@ jobs:
         -backend-config="key=terraform.tfstate"
       
     - name: Terraform Apply
-      run: terraform apply -auto-approve
+      run: |
+        if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          terraform apply -var-file=environments/prd.tfvars -auto-approve
+        else
+          terraform apply -var-file=environments/dev.tfvars -auto-approve
+        fi
