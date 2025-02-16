@@ -4,11 +4,11 @@ locals {
   environment                     = "dev"
   location                        = "uksouth"
 
-  app_service_plan_name = module.naming.app_service_plan.value
-  function_app_name     = module.naming.function_app.value
-  resource_group_name   = module.naming.resource_group.value
-  storage_account_name  = module.naming.storage_account.unique
-  storage_table_name    = module.naming.storage_table.value
+  app_service_plan_name = module.naming.app_service_plan.name
+  function_app_name     = module.naming.function_app.name
+  resource_group_name   = module.naming.resource_group.name
+  storage_account_name  = module.naming.storage_account.name_unique
+  storage_table_name    = module.naming.storage_table.name
 
   frontdoor_profile_name      = module.naming.frontdoor.value
   frontdoor_origin_group_name = "${local.custom_domain_resource_friendly}-origin-group"
