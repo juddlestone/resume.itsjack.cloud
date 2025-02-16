@@ -89,7 +89,7 @@ resource "azurerm_cdn_frontdoor_origin" "frontdoor_origin" {
   enabled                        = true
   certificate_name_check_enabled = true
 
-  host_name          = replace(azurerm_storage_account.storage_account.primary_web_endpoint, "https://", "")
+  host_name          = azurerm_storage_account.storage_account.primary_blob_host
   http_port          = 80
   https_port         = 443
   priority           = 1
