@@ -90,11 +90,11 @@ resource "azurerm_linux_function_app" "function_app" {
   tags = local.tags
 }
 
-# resource "azurerm_role_assignment" "function_table_contributor" {
-#   scope                = azurerm_storage_table.storage_table.id
-#   role_definition_name = "Storage Table Data Contributor"
-#   principal_id        = azurerm_linux_function_app.function_app.identity[0].principal_id
-# }
+resource "azurerm_role_assignment" "function_table_contributor" {
+  scope                = azurerm_storage_table.storage_table.id
+  role_definition_name = "Storage Table Data Contributor"
+  principal_id        = azurerm_linux_function_app.function_app.identity[0].principal_id
+}
 
 resource "azurerm_cdn_frontdoor_profile" "frontdoor_profile" {
   name                = local.frontdoor_profile_name
