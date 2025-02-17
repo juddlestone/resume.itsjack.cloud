@@ -11,8 +11,8 @@ locals {
   storage_table_name    = replace(module.naming.storage_table.name, "-", "")
 
   budget_name       = "budget-${module.naming.resource_group.name}"
-  budget_start_date = formatdate("YYYY-MM-01", time_static.time.rfc3339)
-  budget_end_date   = formatdate("YYYY-MM-01", timeadd(time_static.time.rfc3339, "26280h"))
+  budget_start_date = time_static.time.rfc3339
+  budget_end_date   = timeadd(time_static.time.rfc3339, "26280h")
 
   frontdoor_profile_name      = module.naming.frontdoor.name
   frontdoor_origin_group_name = "${local.custom_domain_resource_friendly}-origin-group"
