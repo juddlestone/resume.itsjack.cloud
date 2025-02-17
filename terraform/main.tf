@@ -91,7 +91,7 @@ resource "azurerm_linux_function_app" "function_app" {
 }
 
 resource "azurerm_role_assignment" "function_table_contributor" {
-  scope                = azurerm_storage.storage_account.id
+  scope                = azurerm_storage_account.storage_account.id
   role_definition_name = "Storage Table Data Contributor"
   principal_id         = azurerm_linux_function_app.function_app.identity[0].principal_id
 }
