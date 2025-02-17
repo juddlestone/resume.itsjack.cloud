@@ -11,7 +11,7 @@ locals {
   storage_table_name    = replace(module.naming.storage_table.name, "-", "")
 
   budget_name       = "budget-${module.naming.resource_group.name}"
-  budget_start_date = formatdate("YYYY-MM-01", time_static.time.rfc3339)
+  budget_start_date = formatdate("YYYY-MM-01T00:00:00Z", time_static.time.rfc3339)
   budget_end_date   = timeadd(time_static.time.rfc3339, "26280h")
 
   frontdoor_profile_name      = module.naming.frontdoor.name
