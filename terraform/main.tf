@@ -1,16 +1,36 @@
+data "azurerm_client_config" "current" {
+}
+
 module "naming" {
   source = "Azure/naming/azurerm"
   suffix = ["cloudresume", local.environment]
 }
 
-data "azurerm_client_config" "current" {
-}
+resource "time_static" "time" {}
 
 resource "azurerm_resource_group" "resource_group" {
   name     = local.resource_group_name
   location = local.location
 
   tags = local.tags
+}
+
+resource "azurerm_consumption_budget_resource_group" "budget" {
+  name              = local.budget_name
+  resource_group_id = azurerm_resource_group.resource_group.id
+  amount            = 5
+
+  time_period {
+    start_date = local.budget_start_date
+    end_date   = local.budget_end_date
+  }
+
+  notification {
+    operator       = "GreaterThan"
+    threshold      = 75
+    threshold_type = "Actual"
+    contact_roles  = ["Owner"]
+  }
 }
 
 resource "azurerm_storage_account" "storage_account" {

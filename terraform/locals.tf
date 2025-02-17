@@ -10,6 +10,10 @@ locals {
   storage_account_name  = module.naming.storage_account.name_unique
   storage_table_name    = replace(module.naming.storage_table.name, "-", "")
 
+  budget_name       = "budget-${module.naming.resource_group.name}"
+  budget_start_date = formatdate("YYYY-MM-01", time_static.time.start)
+  budget_end_date   = formatdate("YYYY-MM-01", timeadd(time_static.time.start, "26280h"))
+
   frontdoor_profile_name      = module.naming.frontdoor.name
   frontdoor_origin_group_name = "${local.custom_domain_resource_friendly}-origin-group"
   frontdoor_origin_name       = "${local.custom_domain_resource_friendly}-origin"
@@ -18,9 +22,9 @@ locals {
   frontdoor_route_name        = "${local.custom_domain_resource_friendly}-route"
 
   tags = {
-    "Environment"        = upper(local.environment)
-    "Criticality"        = "Low"
-    "WorkloadName"       = "CloudResume"
-    "DataClassification" = "Public"
+    "Environment"  = upper(local.environment)
+    "Criticality"  = "Low"
+    "ServiceName"  = "CloudResume"
+    "ServiceOwner" = "jack@itsjack.cloud"
   }
 }
