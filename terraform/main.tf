@@ -95,7 +95,7 @@ resource "azurerm_role_assignment" "function_table_contributor" {
   role_definition_name = "Storage Table Data Contributor"
   principal_id        = azurerm_linux_function_app.function_app.identity[0].principal_id
 
-  depends_on = [ azurerm_linux_function_app.function_app.identity ]
+  depends_on = [ azurerm_linux_function_app.function_app ]
 }
 
 resource "azurerm_cdn_frontdoor_profile" "frontdoor_profile" {
