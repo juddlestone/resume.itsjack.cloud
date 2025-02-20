@@ -84,16 +84,25 @@ resource "azurerm_linux_function_app" "function_app" {
   site_config {}
 
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.uai_function_app.id,
+    ]
   }
 
   tags = local.tags
 }
 
+resource "azurerm_user_assigned_identity" "uai_function_app" {
+  name                = local.function_app_identity_name
+  resource_group_name = azurerm_resource_group.resource_group.name
+  location            = azurerm_resource_group.resource_group.location
+}
+
 resource "azurerm_role_assignment" "function_table_contributor" {
   scope                = azurerm_storage_account.storage_account.id
   role_definition_name = "Storage Table Data Contributor"
-  principal_id         = azurerm_linux_function_app.function_app.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.uai_function_app.principal_id
 }
 
 resource "azurerm_cdn_frontdoor_profile" "frontdoor_profile" {

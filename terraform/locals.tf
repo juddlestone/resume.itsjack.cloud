@@ -4,11 +4,12 @@ locals {
   environment                     = var.environment
   location                        = var.location
 
-  app_service_plan_name = module.naming.app_service_plan.name
-  function_app_name     = module.naming.function_app.name
-  resource_group_name   = module.naming.resource_group.name
-  storage_account_name  = module.naming.storage_account.name_unique
-  storage_table_name    = replace(module.naming.storage_table.name, "-", "")
+  app_service_plan_name      = module.naming.app_service_plan.name
+  function_app_name          = module.naming.function_app.name
+  function_app_identity_name = "uai-${module.naming.function_app.name}"
+  resource_group_name        = module.naming.resource_group.name
+  storage_account_name       = module.naming.storage_account.name_unique
+  storage_table_name         = replace(module.naming.storage_table.name, "-", "")
 
   budget_name       = "budget-${module.naming.resource_group.name}"
   budget_start_date = formatdate("YYYY-MM-01'T'hh:mm:ssZ", time_static.time.rfc3339)
