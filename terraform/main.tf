@@ -72,38 +72,38 @@ resource "azurerm_service_plan" "service_plan" {
   tags = local.tags
 }
 
-# resource "azurerm_linux_function_app" "function_app" {
-#   name                = local.function_app_name
-#   resource_group_name = azurerm_resource_group.resource_group.name
-#   location            = azurerm_resource_group.resource_group.location
+resource "azurerm_linux_function_app" "function_app" {
+  name                = local.function_app_name
+  resource_group_name = azurerm_resource_group.resource_group.name
+  location            = azurerm_resource_group.resource_group.location
 
-#   service_plan_id            = azurerm_service_plan.service_plan.id
-#   storage_account_name       = azurerm_storage_account.storage_account.name
-#   storage_account_access_key = azurerm_storage_account.storage_account.primary_access_key
+  service_plan_id            = azurerm_service_plan.service_plan.id
+  storage_account_name       = azurerm_storage_account.storage_account.name
+  storage_account_access_key = azurerm_storage_account.storage_account.primary_access_key
 
-#   site_config {}
+  site_config {}
 
-#   identity {
-#     type = "UserAssigned"
-#     identity_ids = [
-#       azurerm_user_assigned_identity.uai_function_app.id,
-#     ]
-#   }
+  identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.uai_function_app.id,
+    ]
+  }
 
-#   tags = local.tags
-# }
+  tags = local.tags
+}
 
-# resource "azurerm_user_assigned_identity" "uai_function_app" {
-#   name                = local.function_app_identity_name
-#   resource_group_name = azurerm_resource_group.resource_group.name
-#   location            = azurerm_resource_group.resource_group.location
-# }
+resource "azurerm_user_assigned_identity" "uai_function_app" {
+  name                = local.function_app_identity_name
+  resource_group_name = azurerm_resource_group.resource_group.name
+  location            = azurerm_resource_group.resource_group.location
+}
 
-# resource "azurerm_role_assignment" "function_table_contributor" {
-#   scope                = azurerm_storage_account.storage_account.id
-#   role_definition_name = "Storage Table Data Contributor"
-#   principal_id         = azurerm_user_assigned_identity.uai_function_app.principal_id
-# }
+resource "azurerm_role_assignment" "function_table_contributor" {
+  scope                = azurerm_storage_account.storage_account.id
+  role_definition_name = "Storage Table Data Contributor"
+  principal_id         = azurerm_user_assigned_identity.uai_function_app.principal_id
+}
 
 resource "azurerm_cdn_frontdoor_profile" "frontdoor_profile" {
   name                = local.frontdoor_profile_name
