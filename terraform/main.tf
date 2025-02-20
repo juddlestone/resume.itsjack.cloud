@@ -16,23 +16,23 @@ resource "azurerm_resource_group" "this" {
   tags = local.tags
 }
 
-resource "azurerm_consumption_budget_resource_group" "this" {
-  name              = local.budget_name
-  resource_group_id = azurerm_resource_group.this.id
-  amount            = 5
+# resource "azurerm_consumption_budget_resource_group" "this" {
+#   name              = local.budget_name
+#   resource_group_id = azurerm_resource_group.this.id
+#   amount            = 5
 
-  time_period {
-    start_date = local.budget_start_date
-    end_date   = local.budget_end_date
-  }
+#   time_period {
+#     start_date = local.budget_start_date
+#     end_date   = local.budget_end_date
+#   }
 
-  notification {
-    operator       = "GreaterThan"
-    threshold      = 75
-    threshold_type = "Actual"
-    contact_roles  = ["Owner"]
-  }
-}
+#   notification {
+#     operator       = "GreaterThan"
+#     threshold      = 75
+#     threshold_type = "Actual"
+#     contact_roles  = ["Owner"]
+#   }
+# }
 
 resource "azurerm_container_app_environment" "this" {
   name                       = local.container_app_environment_name
