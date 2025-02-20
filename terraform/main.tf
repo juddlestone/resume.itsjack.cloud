@@ -6,18 +6,17 @@ module "naming" {
   suffix = ["cloudresume", local.environment]
 }
 
-resource "time_static" "time" {}
 
-resource "azurerm_resource_group" "resource_group" {
+resource "azurerm_resource_group" "this" {
   name     = local.resource_group_name
   location = local.location
 
   tags = local.tags
 }
 
-resource "azurerm_consumption_budget_resource_group" "budget" {
+resource "azurerm_consumption_budget_resource_group" "this" {
   name              = local.budget_name
-  resource_group_id = azurerm_resource_group.resource_group.id
+  resource_group_id = azurerm_resource_group.this.id
   amount            = 5
 
   time_period {
@@ -33,152 +32,21 @@ resource "azurerm_consumption_budget_resource_group" "budget" {
   }
 }
 
-resource "azurerm_storage_account" "storage_account" {
-  name                = local.storage_account_name
-  resource_group_name = azurerm_resource_group.resource_group.name
-  location            = azurerm_resource_group.resource_group.location
-
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-
-  tags = local.tags
-}
-
-resource "azurerm_storage_account_static_website" "static_site" {
-  storage_account_id = azurerm_storage_account.storage_account.id
-  index_document     = "index.html"
-  error_404_document = "404.html"
-}
-
-resource "azurerm_storage_table" "storage_table" {
-  name                 = local.storage_table_name
-  storage_account_name = azurerm_storage_account.storage_account.name
-}
-
-resource "azurerm_role_assignment" "storage_account_contributor" {
-  scope                = azurerm_storage_account.storage_account.id
-  role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = data.azurerm_client_config.current.object_id
-}
-
-resource "azurerm_service_plan" "service_plan" {
-  name                = local.app_service_plan_name
-  resource_group_name = azurerm_resource_group.resource_group.name
-  location            = azurerm_resource_group.resource_group.location
-
-  os_type  = "Linux"
-  sku_name = "B1"
+resource "azurerm_container_app_environment" "this" {
+  name                       = local.container_app_environment_name
+  resource_group_name        = azurerm_resource_group.this.name
+  location                   = azurerm_resource_group.this.location
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
+  logs_destination           = "log-analytics"
 
   tags = local.tags
+
 }
 
-resource "azurerm_linux_function_app" "function_app" {
-  name                = local.function_app_name
-  resource_group_name = azurerm_resource_group.resource_group.name
-  location            = azurerm_resource_group.resource_group.location
-
-  service_plan_id            = azurerm_service_plan.service_plan.id
-  storage_account_name       = azurerm_storage_account.storage_account.name
-  storage_account_access_key = azurerm_storage_account.storage_account.primary_access_key
-
-  site_config {}
-
-  identity {
-    type = "SystemAssigned"
-  }
-
-  tags = local.tags
-}
-
-resource "azurerm_role_assignment" "function_table_contributor" {
-  scope                = azurerm_storage_account.storage_account.id
-  role_definition_name = "Storage Table Data Contributor"
-  principal_id         = azurerm_linux_function_app.function_app.identity[0].principal_id
-}
-
-resource "azurerm_cdn_frontdoor_profile" "frontdoor_profile" {
-  name                = local.frontdoor_profile_name
-  resource_group_name = azurerm_resource_group.resource_group.name
-  sku_name            = "Standard_AzureFrontDoor"
-
-  tags = local.tags
-}
-
-resource "azurerm_cdn_frontdoor_origin_group" "frontdoor_origin_group" {
-  name                     = local.frontdoor_origin_group_name
-  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.frontdoor_profile.id
-
-  health_probe {
-    interval_in_seconds = 240
-    path                = "/"
-    protocol            = "Https"
-    request_type        = "HEAD"
-  }
-
-  load_balancing {
-    additional_latency_in_milliseconds = 0
-    sample_size                        = 4
-    successful_samples_required        = 2
-  }
-}
-
-resource "azurerm_cdn_frontdoor_origin" "frontdoor_origin" {
-  name                           = local.frontdoor_origin_name
-  cdn_frontdoor_origin_group_id  = azurerm_cdn_frontdoor_origin_group.frontdoor_origin_group.id
-  enabled                        = true
-  certificate_name_check_enabled = true
-
-  host_name          = azurerm_storage_account.storage_account.primary_web_host
-  origin_host_header = azurerm_storage_account.storage_account.primary_web_host
-  http_port          = 80
-  https_port         = 443
-  priority           = 1
-  weight             = 1000
-}
-
-resource "azurerm_cdn_frontdoor_endpoint" "frontdoor_endpoint" {
-  name                     = local.frontdoor_endpoint_name
-  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.frontdoor_profile.id
-}
-
-resource "azurerm_cdn_frontdoor_rule_set" "frontdoor_rule_set" {
-  name                     = local.frontdoor_rule_name
-  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.frontdoor_profile.id
-}
-
-resource "azurerm_cdn_frontdoor_custom_domain" "frontdoor_custom_domain" {
-  name                     = local.custom_domain_resource_friendly
-  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.frontdoor_profile.id
-  host_name                = local.custom_domain
-
-  tls {
-    certificate_type = "ManagedCertificate"
-  }
-}
-
-resource "azurerm_cdn_frontdoor_route" "frontdoor_route" {
-  name                          = local.frontdoor_route_name
-  cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.frontdoor_endpoint.id
-  cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.frontdoor_origin_group.id
-  cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.frontdoor_origin.id]
-  cdn_frontdoor_rule_set_ids    = [azurerm_cdn_frontdoor_rule_set.frontdoor_rule_set.id]
-  enabled                       = true
-
-  https_redirect_enabled = true
-  patterns_to_match      = ["/*"]
-  supported_protocols    = ["Http", "Https"]
-
-  cdn_frontdoor_custom_domain_ids = [azurerm_cdn_frontdoor_custom_domain.frontdoor_custom_domain.id]
-  link_to_default_domain          = false
-
-  cache {
-    query_string_caching_behavior = "IgnoreQueryString"
-    compression_enabled           = true
-    content_types_to_compress     = ["text/html", "text/javascript", "text/xml"]
-  }
-}
-
-resource "azurerm_cdn_frontdoor_custom_domain_association" "domain_association" {
-  cdn_frontdoor_custom_domain_id = azurerm_cdn_frontdoor_custom_domain.frontdoor_custom_domain.id
-  cdn_frontdoor_route_ids        = [azurerm_cdn_frontdoor_route.frontdoor_route.id]
+resource "azurerm_log_analytics_workspace" "this" {
+  name                = local.log_analytics_workspace_name
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
 }
