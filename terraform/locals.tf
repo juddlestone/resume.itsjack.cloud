@@ -12,8 +12,9 @@ locals {
 
   container_apps = {
     "frontend" = {
-      image = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
-      port  = 80
+      image            = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
+      port             = 80
+      external_enabled = true
     }
   }
 
