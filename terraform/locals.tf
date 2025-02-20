@@ -11,8 +11,7 @@ locals {
   log_analytics_workspace_name   = module.naming.log_analytics_workspace.name
 
   container_apps = {
-    "cloudresume" = {
-      name  = "frontend"
+    "frontend" = {
       image = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
       port  = 80
     }
