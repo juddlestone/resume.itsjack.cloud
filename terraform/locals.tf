@@ -1,7 +1,6 @@
 locals {
   application_name                = "cloudresume"
-  custom_domain                   = var.custom_domain
-  custom_domain_resource_friendly = replace(local.custom_domain, ".", "-")
+  custom_domain_resource_friendly = replace(var.custom_domain, ".", "-")
   environment                     = var.environment
   location                        = var.location
 
@@ -30,7 +29,7 @@ locals {
 locals {
   container_apps = {
     "frontend" = {
-      custom_domain    = local.custom_domain
+      custom_domain    = var.custom_domain
       image            = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
       port             = 80
       external_enabled = true
