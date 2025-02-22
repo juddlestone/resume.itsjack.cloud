@@ -12,3 +12,8 @@ variable "location" {
   description = "The location to deploy to"
   type        = string
 }
+
+variable "container_registry_resource_id" {
+  description = "The ID of the container registry to use"
+  type        = string
+}

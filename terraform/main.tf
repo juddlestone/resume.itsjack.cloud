@@ -59,6 +59,13 @@ resource "azurerm_user_assigned_identity" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
+resource "azurerm_role_assignment" "acrpull " {
+  for_each             = local.container_apps
+  scope                = local.container_registry_resource_id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_user_assigned_identity.this[each.key].principal_id
+}
+
 resource "azurerm_container_app" "this" {
   for_each                     = local.container_apps
   name                         = "ca-${each.key}-${local.application_name}-${local.environment}"

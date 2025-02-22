@@ -5,10 +5,12 @@ locals {
   environment                     = var.environment
   location                        = var.location
 
-  user_assigned_identity_name    = module.naming.user_assigned_identity.name
+  container_registry_resource_id = var.container_registry_resource_id
+
   container_app_environment_name = module.naming.container_app_environment.name
-  resource_group_name            = module.naming.resource_group.name
   log_analytics_workspace_name   = module.naming.log_analytics_workspace.name
+  resource_group_name            = module.naming.resource_group.name
+  user_assigned_identity_name    = module.naming.user_assigned_identity.name
 
   budget_name       = "budget-${module.naming.resource_group.name}"
   budget_start_date = formatdate("YYYY-MM-01'T'hh:mm:ssZ", time_static.this.rfc3339)
@@ -23,7 +25,8 @@ locals {
 }
 
 
-# Container Information
+
+# Containers
 locals {
   container_apps = {
     "frontend" = {
