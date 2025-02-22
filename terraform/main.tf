@@ -100,12 +100,12 @@ resource "azurerm_log_analytics_workspace" "this" {
 # }
 
 # Container App - ACR Pull
-resource "azurerm_role_assignment" "acrpull" {
-  for_each             = local.container_apps
-  scope                = local.container_registry_resource_id
-  role_definition_name = "AcrPull"
-  principal_id         = azurerm_user_assigned_identity.this[each.key].principal_id
-}
+# resource "azurerm_role_assignment" "acrpull" {
+#   for_each             = local.container_apps
+#   scope                = local.container_registry_resource_id
+#   role_definition_name = "AcrPull"
+#   principal_id         = azurerm_user_assigned_identity.this[each.key].principal_id
+# }
 
 
 
