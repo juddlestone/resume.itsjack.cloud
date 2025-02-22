@@ -52,44 +52,44 @@ resource "azurerm_log_analytics_workspace" "this" {
 }
 
 # Container App
-resource "azurerm_container_app" "this" {
-  for_each                     = local.container_apps
-  name                         = "ca-${each.key}-${local.application_name}-${local.environment}"
-  resource_group_name          = azurerm_resource_group.this.name
-  container_app_environment_id = azurerm_container_app_environment.this.id
-  revision_mode                = "Single"
+# resource "azurerm_container_app" "this" {
+#   for_each                     = local.container_apps
+#   name                         = "ca-${each.key}-${local.application_name}-${local.environment}"
+#   resource_group_name          = azurerm_resource_group.this.name
+#   container_app_environment_id = azurerm_container_app_environment.this.id
+#   revision_mode                = "Single"
 
-  template {
-    container {
-      name   = "ca-${each.key}-${local.application_name}-${local.environment}"
-      image  = each.value.image
-      cpu    = 0.25
-      memory = "0.5Gi"
-    }
-  }
+#   template {
+#     container {
+#       name   = "ca-${each.key}-${local.application_name}-${local.environment}"
+#       image  = each.value.image
+#       cpu    = 0.25
+#       memory = "0.5Gi"
+#     }
+#   }
 
-  ingress {
-    target_port      = each.value.port
-    external_enabled = each.value.external_enabled
+#   ingress {
+#     target_port      = each.value.port
+#     external_enabled = each.value.external_enabled
 
-    traffic_weight {
-      percentage      = 100
-      latest_revision = true
-    }
-  }
+#     traffic_weight {
+#       percentage      = 100
+#       latest_revision = true
+#     }
+#   }
 
-  registry {
-    server   = "acrmanacr.azurecr.io"
-    identity = azurerm_user_assigned_identity.this[each.key].id
-  }
+#   registry {
+#     server   = "acrmanacr.azurecr.io"
+#     identity = azurerm_user_assigned_identity.this[each.key].id
+#   }
 
-  identity {
-    type = "UserAssigned"
-    identity_ids = [
-      azurerm_user_assigned_identity.this[each.key].id
-    ]
-  }
-}
+#   identity {
+#     type = "UserAssigned"
+#     identity_ids = [
+#       azurerm_user_assigned_identity.this[each.key].id
+#     ]
+#   }
+# }
 
 # Container App - User Assigned Identity
 # resource "azurerm_user_assigned_identity" "this" {
