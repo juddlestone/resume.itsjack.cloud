@@ -53,7 +53,8 @@ resource "azurerm_log_analytics_workspace" "this" {
 }
 
 resource "azurerm_user_assigned_identity" "this" {
-  name                = local.user_assigned_identity_name
+  for_each            = local.container_apps
+  name                = "uai-${each.key}-${local.application_name}-${local.environment}"
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
 }
@@ -84,10 +85,27 @@ resource "azurerm_container_app" "this" {
     }
   }
 
+  registry {
+    server   = "acrmanacr.azurecr.io"
+    identity = azurerm_user_assigned_identity.this[each.key].principal_id
+  }
+
   identity {
     type = "UserAssigned"
     identity_ids = [
-      azurerm_user_assigned_identity.this.id,
+      azurerm_user_assigned_identity.this[each.key].id,
     ]
   }
 }
+
+
+# resource "azurerm_container_app_custom_domain" "this" {
+#   for_each         = local.container_apps
+#   name             = trimsuffix(trimprefix(azurerm_dns_txt_record.api.fqdn, "asuid."), ".")
+#   container_app_id = azurerm_container_app.this[each.key].id
+
+#   lifecycle {
+#     // When using an Azure created Managed Certificate these values must be added to ignore_changes to prevent resource recreation.
+#     ignore_changes = [certificate_binding_type]
+#   }
+# }

@@ -10,14 +10,6 @@ locals {
   resource_group_name            = module.naming.resource_group.name
   log_analytics_workspace_name   = module.naming.log_analytics_workspace.name
 
-  container_apps = {
-    "frontend" = {
-      image            = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
-      port             = 80
-      external_enabled = true
-    }
-  }
-
   budget_name       = "budget-${module.naming.resource_group.name}"
   budget_start_date = formatdate("YYYY-MM-01'T'hh:mm:ssZ", time_static.this.rfc3339)
   budget_end_date   = timeadd(time_static.this.rfc3339, "26280h")
@@ -27,5 +19,24 @@ locals {
     "Criticality"  = "Low"
     "ServiceName"  = "CloudResume"
     "ServiceOwner" = "jack@itsjack.cloud"
+  }
+}
+
+
+# Container Information
+locals {
+  container_apps = {
+    "frontend" = {
+      custom_domain    = local.custom_domain
+      image            = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
+      port             = 80
+      external_enabled = true
+    }
+
+    "counter" = {
+      image            = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
+      port             = 80
+      external_enabled = false
+    }
   }
 }
