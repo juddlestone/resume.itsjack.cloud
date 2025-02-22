@@ -94,7 +94,7 @@ resource "azurerm_container_app" "this" {
 
   registry {
     server   = "acrmanacr.azurecr.io"
-    identity = azurerm_user_assigned_identity.this[each.key].principal_id
+    identity = azurerm_user_assigned_identity.this[each.key].id
   }
 
   identity {
