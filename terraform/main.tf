@@ -92,12 +92,12 @@ resource "azurerm_container_app" "this" {
 }
 
 # Container App - User Assigned Identity
-resource "azurerm_user_assigned_identity" "this" {
-  for_each            = local.container_apps
-  name                = "uai-${each.key}-${local.application_name}-${local.environment}"
-  location            = azurerm_resource_group.this.location
-  resource_group_name = azurerm_resource_group.this.name
-}
+# resource "azurerm_user_assigned_identity" "this" {
+#   for_each            = local.container_apps
+#   name                = "uai-${each.key}-${local.application_name}-${local.environment}"
+#   location            = azurerm_resource_group.this.location
+#   resource_group_name = azurerm_resource_group.this.name
+# }
 
 # Container App - ACR Pull
 resource "azurerm_role_assignment" "acrpull" {
