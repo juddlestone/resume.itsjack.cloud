@@ -100,7 +100,7 @@ resource "azurerm_container_app" "this" {
   identity {
     type = "UserAssigned"
     identity_ids = [
-      azurerm_user_assigned_identity.this[each.key].principal_id
+      azurerm_user_assigned_identity.this[each.key].id
     ]
   }
 }
