@@ -59,7 +59,7 @@ resource "azurerm_user_assigned_identity" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-resource "azurerm_role_assignment" "acrpull " {
+resource "azurerm_role_assignment" "acrpull" {
   for_each             = local.container_apps
   scope                = local.container_registry_resource_id
   role_definition_name = "AcrPull"
