@@ -6,7 +6,6 @@ module "naming" {
   suffix = [local.application_name, local.environment]
 }
 
-
 resource "time_static" "this" {}
 
 resource "azurerm_resource_group" "this" {
@@ -52,6 +51,47 @@ resource "azurerm_log_analytics_workspace" "this" {
   retention_in_days   = 30
 }
 
+# Container App
+resource "azurerm_container_app" "this" {
+  for_each                     = local.container_apps
+  name                         = "ca-${each.key}-${local.application_name}-${local.environment}"
+  resource_group_name          = azurerm_resource_group.this.name
+  container_app_environment_id = azurerm_container_app_environment.this.id
+  revision_mode                = "Single"
+
+  template {
+    container {
+      name   = "ca-${each.key}-${local.application_name}-${local.environment}"
+      image  = each.value.image
+      cpu    = 0.25
+      memory = "0.5Gi"
+    }
+  }
+
+  ingress {
+    target_port      = each.value.port
+    external_enabled = each.value.external_enabled
+
+    traffic_weight {
+      percentage      = 100
+      latest_revision = true
+    }
+  }
+
+  registry {
+    server   = "acrmanacr.azurecr.io"
+    identity = azurerm_user_assigned_identity.this[each.key].id
+  }
+
+  identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.this[each.key].id
+    ]
+  }
+}
+
+# Container App - User Assigned Identity
 resource "azurerm_user_assigned_identity" "this" {
   for_each            = local.container_apps
   name                = "uai-${each.key}-${local.application_name}-${local.environment}"
@@ -59,6 +99,7 @@ resource "azurerm_user_assigned_identity" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
+# Container App - ACR Pull
 resource "azurerm_role_assignment" "acrpull" {
   for_each             = local.container_apps
   scope                = local.container_registry_resource_id
@@ -66,44 +107,6 @@ resource "azurerm_role_assignment" "acrpull" {
   principal_id         = azurerm_user_assigned_identity.this[each.key].principal_id
 }
 
-# resource "azurerm_container_app" "this" {
-#   for_each                     = local.container_apps
-#   name                         = "ca-${each.key}-${local.application_name}-${local.environment}"
-#   resource_group_name          = azurerm_resource_group.this.name
-#   container_app_environment_id = azurerm_container_app_environment.this.id
-#   revision_mode                = "Single"
-
-#   template {
-#     container {
-#       name   = "ca-${each.key}-${local.application_name}-${local.environment}"
-#       image  = each.value.image
-#       cpu    = 0.25
-#       memory = "0.5Gi"
-#     }
-#   }
-
-#   ingress {
-#     target_port      = each.value.port
-#     external_enabled = each.value.external_enabled
-
-#     traffic_weight {
-#       percentage      = 100
-#       latest_revision = true
-#     }
-#   }
-
-#   registry {
-#     server   = "acrmanacr.azurecr.io"
-#     identity = azurerm_user_assigned_identity.this[each.key].id
-#   }
-
-#   identity {
-#     type = "UserAssigned"
-#     identity_ids = [
-#       azurerm_user_assigned_identity.this[each.key].id
-#     ]
-#   }
-# }
 
 
 # resource "azurerm_container_app_custom_domain" "this" {
