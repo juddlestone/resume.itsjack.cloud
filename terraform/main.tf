@@ -33,22 +33,39 @@ resource "azurerm_resource_group" "this" {
 #   }
 # }
 
-resource "azurerm_container_app_environment" "this" {
-  name                       = local.container_app_environment_name
-  resource_group_name        = azurerm_resource_group.this.name
-  location                   = azurerm_resource_group.this.location
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
-  logs_destination           = "log-analytics"
+module "law" {
+  source  = "Azure/avm-res-operationalinsights-workspace/azurerm"
+  version = "0.4.2"
+
+  name                = local.log_analytics_workspace_name
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
 
   tags = local.tags
 }
 
-resource "azurerm_log_analytics_workspace" "this" {
-  name                = local.log_analytics_workspace_name
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  sku                 = "PerGB2018"
-  retention_in_days   = 30
+module "cae" {
+  source  = "Azure/avm-res-app-managedenvironment/azurerm"
+  version = "0.2.1"
+
+  name                                = local.container_app_environment_name
+  resource_group_name                 = azurerm_resource_group.this.name
+  location                            = azurerm_resource_group.this.location
+  log_analytics_workspace_customer_id = module.law.customer_id
+
+  tags = local.tags
+}
+
+module "container_app_environment" {
+  source  = "Azure/container-app-environment/azurerm"
+  version = "0.1.0"
+
+  container_app_environment_name = local.container_app_environment_name
+  resource_group_name            = azurerm_resource_group.this.name
+  location                       = azurerm_resource_group.this.location
+  log_analytics_workspace_id     = azurerm_log_analytics_workspace.this.id
+  logs_destination               = "log-analytics"
+  tags                           = local.tags
 }
 
 # Container App
@@ -56,7 +73,7 @@ resource "azurerm_container_app" "this" {
   for_each                     = local.container_apps
   name                         = "ca-${each.key}-${local.application_name}-${local.environment}"
   resource_group_name          = azurerm_resource_group.this.name
-  container_app_environment_id = azurerm_container_app_environment.this.id
+  container_app_environment_id = module.cae.id
   revision_mode                = "Single"
 
   template {
@@ -91,7 +108,7 @@ resource "azurerm_container_app" "this" {
   }
 }
 
-Container App - User Assigned Identity
+# Container App - User Assigned Identity
 resource "azurerm_user_assigned_identity" "this" {
   for_each            = local.container_apps
   name                = "uai-${each.key}-${local.application_name}-${local.environment}"
@@ -99,7 +116,7 @@ resource "azurerm_user_assigned_identity" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-Container App - ACR Pull
+# Container App - ACR Pull
 resource "azurerm_role_assignment" "acrpull" {
   for_each             = local.container_apps
   scope                = local.container_registry_resource_id
