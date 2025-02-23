@@ -129,26 +129,27 @@ resource "azurerm_role_assignment" "acrpull" {
 }
 
 # Container App - Table Data Contributor 
-module "storage_account" {
-  source  = "Azure/avm-res-storage-storageaccount/azurerm"
-  version = "0.5.0"
+# module "storage_account" {
+#   source  = "Azure/avm-res-storage-storageaccount/azurerm"
+#   version = "0.5.0"
 
-  name                     = module.naming.storage_account.name
-  resource_group_name      = azurerm_resource_group.this.name
-  location                 = azurerm_resource_group.this.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+#   name                     = module.naming.storage_account.name
+#   resource_group_name      = azurerm_resource_group.this.name
+#   location                 = azurerm_resource_group.this.location
+#   account_tier             = "Standard"
+#   account_replication_type = "LRS"
 
-  network_rules = {
-    default_action = "Allow"
-  }
+#   network_rules = {
+#     default_action = "Allow"
+#     ip_rules       = [module.cae.static_ip_address]
+#   }
 
-  tables = {
-    "visitors" = {
-      name = "visitors"
-    }
-  }
-}
+#   tables = {
+#     "visitors" = {
+#       name = "visitors"
+#     }
+#   }
+# }
 
 
 # # resource "azurerm_container_app_custom_domain" "this" {
