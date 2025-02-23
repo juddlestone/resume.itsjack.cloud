@@ -133,12 +133,11 @@ module "storage_account" {
   source  = "Azure/avm-res-storage-storageaccount/azurerm"
   version = "0.5.0"
 
-  name                            = module.naming.storage_account.name
-  resource_group_name             = azurerm_resource_group.this.name
-  location                        = azurerm_resource_group.this.location
-  account_tier                    = "Standard"
-  account_replication_type        = "LRS"
-  default_to_oauth_authentication = true
+  name                     = module.naming.storage_account.name
+  resource_group_name      = azurerm_resource_group.this.name
+  location                 = azurerm_resource_group.this.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 
   tables = {
     "visitors" = {
