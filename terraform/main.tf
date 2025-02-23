@@ -139,6 +139,10 @@ module "storage_account" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
+  network_rules = {
+    default_action = "Allow"
+  }
+
   tables = {
     "visitors" = {
       name = "visitors"
