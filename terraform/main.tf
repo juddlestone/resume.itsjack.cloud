@@ -51,7 +51,7 @@ module "cae" {
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
 
-  log_analytics_workspace_customer_id        = azurerm_log_analytics_workspace.law.id
+  log_analytics_workspace_customer_id        = azurerm_log_analytics_workspace.law.workspace_id
   log_analytics_workspace_primary_shared_key = azurerm_log_analytics_workspace.law.primary_shared_key
 
   tags = local.tags
