@@ -33,6 +33,9 @@ locals {
       image            = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
       port             = 80
       external_enabled = true
+      environment_variables = {
+        "COUNTER_CONTAINER_HOSTNAME" = "ca-counter-${local.application_name}-${local.environment}"
+      }
     }
 
     "counter" = {
