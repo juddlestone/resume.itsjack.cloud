@@ -6,7 +6,7 @@
 #   suffix = [local.application_name, local.environment]
 # }
 
-# resource "time_static" "this" {}
+resource "time_static" "this" {}
 
 resource "azurerm_resource_group" "this" {
   name     = local.resource_group_name
