@@ -51,7 +51,7 @@ module "cae" {
   name                                = local.container_app_environment_name
   resource_group_name                 = azurerm_resource_group.this.name
   location                            = azurerm_resource_group.this.location
-  log_analytics_workspace_customer_id = module.law.customer_id
+  log_analytics_workspace_customer_id = module.law.resource_id
 
   tags = local.tags
 }
