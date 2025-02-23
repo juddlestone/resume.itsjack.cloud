@@ -8,6 +8,7 @@ module "naming" {
 
 resource "time_static" "this" {}
 
+# Resource Group
 resource "azurerm_resource_group" "this" {
   name     = local.resource_group_name
   location = local.location
@@ -15,24 +16,26 @@ resource "azurerm_resource_group" "this" {
   tags = local.tags
 }
 
-# resource "azurerm_consumption_budget_resource_group" "this" {
-#   name              = local.budget_name
-#   resource_group_id = azurerm_resource_group.this.id
-#   amount            = 5
+# Budget
+resource "azurerm_consumption_budget_resource_group" "this" {
+  name              = local.budget_name
+  resource_group_id = azurerm_resource_group.this.id
+  amount            = 5
 
-#   time_period {
-#     start_date = local.budget_start_date
-#     end_date   = local.budget_end_date
-#   }
+  time_period {
+    start_date = local.budget_start_date
+    end_date   = local.budget_end_date
+  }
 
-#   notification {
-#     operator       = "GreaterThan"
-#     threshold      = 75
-#     threshold_type = "Actual"
-#     contact_roles  = ["Owner"]
-#   }
-# }
+  notification {
+    operator       = "GreaterThan"
+    threshold      = 75
+    threshold_type = "Actual"
+    contact_roles  = ["Owner"]
+  }
+}
 
+# Log Analytics Workspace
 resource "azurerm_log_analytics_workspace" "law" {
   name                = local.log_analytics_workspace_name
   location            = azurerm_resource_group.this.location
@@ -43,6 +46,7 @@ resource "azurerm_log_analytics_workspace" "law" {
   tags = local.tags
 }
 
+# Container App Environment
 module "cae" {
   source  = "Azure/avm-res-app-managedenvironment/azurerm"
   version = "0.2.1"
@@ -124,6 +128,24 @@ resource "azurerm_role_assignment" "acrpull" {
   principal_id         = azurerm_user_assigned_identity.this[each.key].principal_id
 }
 
+# Container App - Table Data Contributor 
+module "storage_account" {
+  source  = "Azure/avm-res-storage-storageaccount/azurerm"
+  version = "0.5.0"
+
+  name                            = module.naming.storage_account.name
+  resource_group_name             = azurerm_resource_group.this.name
+  location                        = azurerm_resource_group.this.location
+  account_tier                    = "Standard"
+  account_replication_type        = "LRS"
+  default_to_oauth_authentication = true
+
+  tables = {
+    "visitors" = {
+      name = "visitors"
+    }
+  }
+}
 
 
 # # resource "azurerm_container_app_custom_domain" "this" {
