@@ -1,10 +1,10 @@
-# data "azurerm_client_config" "current" {
-# }
+data "azurerm_client_config" "current" {
+}
 
-# module "naming" {
-#   source = "Azure/naming/azurerm"
-#   suffix = [local.application_name, local.environment]
-# }
+module "naming" {
+  source = "Azure/naming/azurerm"
+  suffix = [local.application_name, local.environment]
+}
 
 resource "time_static" "this" {}
 
