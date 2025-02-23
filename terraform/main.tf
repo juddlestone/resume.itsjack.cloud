@@ -56,18 +56,6 @@ module "cae" {
   tags = local.tags
 }
 
-module "container_app_environment" {
-  source  = "Azure/container-app-environment/azurerm"
-  version = "0.1.0"
-
-  container_app_environment_name = local.container_app_environment_name
-  resource_group_name            = azurerm_resource_group.this.name
-  location                       = azurerm_resource_group.this.location
-  log_analytics_workspace_id     = azurerm_log_analytics_workspace.this.id
-  logs_destination               = "log-analytics"
-  tags                           = local.tags
-}
-
 # Container App
 resource "azurerm_container_app" "this" {
   for_each                     = local.container_apps
