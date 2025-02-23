@@ -42,6 +42,10 @@ locals {
       image            = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
       port             = 80
       external_enabled = false
+      environment_variables = {
+        "AZURE_STORAGE_ACCOUNT_NAME" = module.naming.storage_account.name
+        "STORAGE_TABLE_NAME"         = "visitors"
+      }
     }
   }
 }

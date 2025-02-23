@@ -75,7 +75,7 @@ resource "azurerm_container_app" "this" {
       memory = "0.5Gi"
 
       dynamic "env" {
-        for_each = each.value.environment_variables != null ? tomap(each.value.environment_variables) : {}
+        for_each = each.value.environment_variables
         content {
           name  = env.key
           value = env.value
