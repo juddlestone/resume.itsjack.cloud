@@ -33,28 +33,29 @@ resource "azurerm_resource_group" "this" {
 #   }
 # }
 
-module "law" {
-  source  = "Azure/avm-res-operationalinsights-workspace/azurerm"
-  version = "0.4.2"
+# resource "azurerm_log_analytics_workspace" "law" {
+#   name                = local.log_analytics_workspace_name
+#   location            = azurerm_resource_group.this.location
+#   resource_group_name = azurerm_resource_group.this.name
+#   sku                 = "PerGB2018"
+#   retention_in_days   = 30
 
-  name                = local.log_analytics_workspace_name
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
+#   tags = local.tags
+# }
 
-  tags = local.tags
-}
+# module "cae" {
+#   source  = "Azure/avm-res-app-managedenvironment/azurerm"
+#   version = "0.2.1"
 
-module "cae" {
-  source  = "Azure/avm-res-app-managedenvironment/azurerm"
-  version = "0.2.1"
+#   name                = local.container_app_environment_name
+#   resource_group_name = azurerm_resource_group.this.name
+#   location            = azurerm_resource_group.this.location
 
-  name                                = local.container_app_environment_name
-  resource_group_name                 = azurerm_resource_group.this.name
-  location                            = azurerm_resource_group.this.location
-  log_analytics_workspace_customer_id = module.law.resource_id
+#   log_analytics_workspace_customer_id        = azurerm_log_analytics_workspace.law.id
+#   log_analytics_workspace_primary_shared_key = azurerm_log_analytics_workspace.law.primary_shared_key
 
-  tags = local.tags
-}
+#   tags = local.tags
+# }
 
 # Container App
 resource "azurerm_container_app" "this" {
