@@ -74,11 +74,11 @@ resource "azurerm_container_app" "this" {
       cpu    = 0.25
       memory = "0.5Gi"
 
-      dynamic "environment" {
+      dynamic "env" {
         for_each = each.value.environment_variables
         content {
-          name  = environment.key
-          value = environment.value
+          name  = env.key
+          value = env.value
         }
 
       }
