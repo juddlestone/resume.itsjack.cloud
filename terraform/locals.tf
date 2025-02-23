@@ -43,7 +43,7 @@ locals {
       port             = 80
       external_enabled = false
       environment_variables = {
-        "AZURE_STORAGE_ACCOUNT_NAME" = module.naming.storage_account.name
+        "AZURE_STORAGE_ACCOUNT_NAME" = module.naming.storage_account.name_unique
         "STORAGE_TABLE_NAME"         = "visitors"
       }
     }
