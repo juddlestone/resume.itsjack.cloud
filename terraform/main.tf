@@ -129,36 +129,15 @@ resource "azurerm_role_assignment" "acrpull" {
 }
 
 # Storage Account
-module "storage_account" {
-  source  = "Azure/avm-res-storage-storageaccount/azurerm"
-  version = "0.5.0"
-
+resource "azurerm_storage_account" "this" {
   name                     = module.naming.storage_account.name_unique
   resource_group_name      = azurerm_resource_group.this.name
   location                 = azurerm_resource_group.this.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-
-  network_rules = {
-    default_action = "Allow"
-    ip_rules       = [module.cae.static_ip_address]
-  }
-
-  tables = {
-    "visitors" = {
-      name = "visitors"
-    }
-  }
 }
 
-
-# # resource "azurerm_container_app_custom_domain" "this" {
-# #   for_each         = { for key, value in local.container_apps : key => value if contains(keys(value), "custom_domain") }
-# #   name             = trimsuffix(trimprefix(azurerm_dns_txt_record.api.fqdn, "asuid."), ".")
-# #   container_app_id = azurerm_container_app.this[each.key].id
-
-# #   lifecycle {
-# #     // When using an Azure created Managed Certificate these values must be added to ignore_changes to prevent resource recreation.
-# #     ignore_changes = [certificate_binding_type]
-# #   }
-# # }
+resource "azurerm_storage_table" "this" {
+  name                 = "visitors"
+  storage_account_name = azurerm_storage_account.this.name
+}
