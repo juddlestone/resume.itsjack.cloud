@@ -64,53 +64,29 @@ module "cae" {
 }
 
 # Container App
-resource "azurerm_container_app" "this" {
-  for_each                     = local.container_apps
-  name                         = "ca-${each.key}-${local.application_name}-${local.environment}"
-  resource_group_name          = azurerm_resource_group.this.name
-  container_app_environment_id = module.cae.id
-  revision_mode                = "Single"
+module "container_app" {
+  for_each = local.container_apps
+  source   = "Azure/avm-res-app-containerapp/azurerm"
+  version  = "0.3.0"
 
-  template {
-    container {
+  name                                  = "ca-${each.key}-${local.application_name}-${local.environment}"
+  resource_group_name                   = azurerm_resource_group.this.name
+  container_app_environment_resource_id = module.cae.resource_id
+  revision_mode                         = each.value.revision_mode
+
+  template = {
+    container = {
       name   = "ca-${each.key}-${local.application_name}-${local.environment}"
+      cpu    = each.value.cpu
+      memory = each.value.memory
       image  = each.value.image
-      cpu    = 0.25
-      memory = "0.5Gi"
+      port   = each.value.port
 
-      dynamic "env" {
-        for_each = each.value.environment_variables
-        content {
-          name  = env.key
-          value = env.value
-        }
-
-      }
+      env = each.value.environment_variables
     }
-  }
-
-  ingress {
-    target_port      = each.value.port
-    external_enabled = each.value.external_enabled
-
-    traffic_weight {
-      percentage      = 100
-      latest_revision = true
-    }
-  }
-
-  registry {
-    server   = "acrmanacr.azurecr.io"
-    identity = azurerm_user_assigned_identity.this[each.key].id
-  }
-
-  identity {
-    type = "UserAssigned"
-    identity_ids = [
-      azurerm_user_assigned_identity.this[each.key].id
-    ]
   }
 }
+
 
 # Container App - User Assigned Identity
 resource "azurerm_user_assigned_identity" "this" {
@@ -137,6 +113,7 @@ resource "azurerm_storage_account" "this" {
   account_replication_type = "LRS"
 }
 
+# Storage Table
 resource "azurerm_storage_table" "this" {
   name                 = "visitors"
   storage_account_name = azurerm_storage_account.this.name

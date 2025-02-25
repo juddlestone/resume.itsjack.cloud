@@ -38,14 +38,18 @@ locals {
       }
     }
 
-    "counter" = {
-      image            = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
-      port             = 80
-      external_enabled = false
-      environment_variables = {
-        "AZURE_STORAGE_ACCOUNT_NAME" = module.naming.storage_account.name_unique
-        "STORAGE_TABLE_NAME"         = "visitors"
-      }
-    }
+    # "counter" = {
+    #   image            = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
+    #   port             = 80
+    #   external_enabled = false
+    #   environment_variables = {
+    #     "AZURE_STORAGE_ACCOUNT_NAME" = module.naming.storage_account.name_unique
+    #     "STORAGE_TABLE_NAME"         = "visitors"
+    #   }
+
+    #   secrets = {
+    #     "AZURE_STORAGE_ACCOUNT_KEY" = module.key_vault.secrets["storage-account-key"].value
+    #   }
+    # }
   }
 }
