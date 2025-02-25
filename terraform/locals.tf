@@ -29,27 +29,48 @@ locals {
 locals {
   container_apps = {
     "frontend" = {
-      custom_domain    = var.custom_domain
-      image            = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
-      port             = 80
-      external_enabled = true
-      environment_variables = {
-        "COUNTER_CONTAINER_HOSTNAME" = "ca-counter-${local.application_name}-${local.environment}"
-      }
+      containers = [
+        {
+          name   = "frontend"
+          image  = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+          cpu    = 0.5
+          memory = "1Gi"
+          env = [
+            {
+              name  = "ENVIRONMENT"
+              value = "production"
+            },
+            {
+              name  = "API_URL"
+              value = "https://api.example.com"
+            }
+          ]
+        }
+      ]
+    },
+    "api" = {
+      containers = [
+        {
+          name   = "api"
+          image  = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+          cpu    = 0.25
+          memory = "0.5Gi"
+          env = [
+            {
+              name  = "ENVIRONMENT"
+              value = "production"
+            },
+            {
+              name  = "DB_CONNECTION"
+              value = "..."
+            },
+            {
+              name        = "DB_PASSWORD"
+              secret_name = "db-password-secret"
+            }
+          ]
+        }
+      ]
     }
-
-    # "counter" = {
-    #   image            = "mcr.microsoft.com/azuredocs/aks-helloworld:v1"
-    #   port             = 80
-    #   external_enabled = false
-    #   environment_variables = {
-    #     "AZURE_STORAGE_ACCOUNT_NAME" = module.naming.storage_account.name_unique
-    #     "STORAGE_TABLE_NAME"         = "visitors"
-    #   }
-
-    #   secrets = {
-    #     "AZURE_STORAGE_ACCOUNT_KEY" = module.key_vault.secrets["storage-account-key"].value
-    #   }
-    # }
   }
 }

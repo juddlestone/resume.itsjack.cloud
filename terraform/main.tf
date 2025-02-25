@@ -75,13 +75,11 @@ module "container_app" {
   revision_mode                         = each.value.revision_mode
 
   template = {
-    container = {
-      name   = "ca-${each.key}-${local.application_name}-${local.environment}"
-      cpu    = each.value.cpu
-      memory = each.value.memory
-      image  = each.value.image
-
-      env = each.value.environment_variables
+    container {
+      name   = each.value.containers[0].name
+      image  = each.value.containers[0].image
+      cpu    = each.value.containers[0].cpu
+      memory = each.value.containers[0].memory
     }
   }
 }
