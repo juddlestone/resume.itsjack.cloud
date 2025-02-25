@@ -37,7 +37,7 @@ locals {
       containers = [
         {
           name   = "ca-frontend-${local.application_name}-${local.environment}"
-          image  = "mcr.microsoft.com/mcr/hello-world:v1.0"
+          image  = "mcr.microsoft.com/k8se/quickstart:latest"
           cpu    = 0.25
           memory = "0.5Gi"
           env = [
@@ -55,7 +55,7 @@ locals {
       containers = [
         {
           name   = "ca-backend-${local.application_name}-${local.environment}"
-          image  = "mcr.microsoft.com/mcr/hello-world:v1.0"
+          image  = "mcr.microsoft.com/k8se/quickstart:latest"
           cpu    = 0.25
           memory = "0.5Gi"
           env = [
