@@ -80,7 +80,6 @@ module "container_app" {
       cpu    = each.value.cpu
       memory = each.value.memory
       image  = each.value.image
-      port   = each.value.port
 
       env = each.value.environment_variables
     }
