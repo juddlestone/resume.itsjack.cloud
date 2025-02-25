@@ -70,7 +70,7 @@ module "container_app" {
   source   = "Azure/avm-res-app-containerapp/azurerm"
   version  = "0.3.0"
 
-  name                                  = each.key
+  name                                  = each.value.name
   resource_group_name                   = azurerm_resource_group.this.name
   container_app_environment_resource_id = module.cae.resource_id
   revision_mode                         = "Single"

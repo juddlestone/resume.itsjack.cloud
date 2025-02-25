@@ -31,15 +31,15 @@ locals {
 
   # App-specific configurations including environment variables
   app_configs = {
-    "app1" = {
-      max_replicas = 10
-      min_replicas = 1
+    "frontend" = {
+      max_replicas = 1
+      min_replicas = 0
       containers = [
         {
-          name   = "frontend"
-          image  = "myregistry.azurecr.io/frontend:latest"
-          cpu    = 0.5
-          memory = "1Gi"
+          name   = "ca-frontend-${local.application_name}-${local.environment}"
+          image  = "mcr.microsoft.com/azuredocs/aks-helloworld:stable"
+          cpu    = 0.25
+          memory = "0.5Gi"
           env = [
             {
               name  = "APP_TYPE"
@@ -49,19 +49,19 @@ locals {
         }
       ]
     },
-    "app2" = {
-      max_replicas = 5
-      min_replicas = 1
+    "backend" = {
+      max_replicas = 1
+      min_replicas = 0
       containers = [
         {
-          name   = "api"
-          image  = "myregistry.azurecr.io/api:latest"
+          name   = "ca-backend-${local.application_name}-${local.environment}"
+          image  = "mcr.microsoft.com/azuredocs/aks-helloworld:stable"
           cpu    = 0.25
           memory = "0.5Gi"
           env = [
             {
               name  = "APP_TYPE"
-              value = "api"
+              value = "backend"
             }
           ]
         }
