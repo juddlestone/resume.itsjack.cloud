@@ -63,25 +63,19 @@ module "cae" {
   tags = local.tags
 }
 
+
 # Container App
 module "container_app" {
   for_each = local.container_apps
   source   = "Azure/avm-res-app-containerapp/azurerm"
   version  = "0.3.0"
 
-  name                                  = "ca-${each.key}-${local.application_name}-${local.environment}"
-  resource_group_name                   = azurerm_resource_group.this.name
-  container_app_environment_resource_id = module.cae.resource_id
-  revision_mode                         = each.value.revision_mode
+  name                                  = each.key
+  resource_group_name                   = azurerm_resource_group.example.name
+  container_app_environment_resource_id = azurerm_container_app_environment.example.id
+  revision_mode                         = "Single"
 
-  template = {
-    container {
-      name   = each.value.containers[0].name
-      image  = each.value.containers[0].image
-      cpu    = each.value.containers[0].cpu
-      memory = each.value.containers[0].memory
-    }
-  }
+  template = each.value
 }
 
 
@@ -92,6 +86,7 @@ resource "azurerm_user_assigned_identity" "this" {
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
 }
+
 
 # Container App - ACR Pull
 resource "azurerm_role_assignment" "acrpull" {

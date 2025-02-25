@@ -23,54 +23,54 @@ locals {
   }
 }
 
-
-
-# Containers
 locals {
-  container_apps = {
-    "frontend" = {
+  # Common settings for all apps
+  common_settings = {
+    revision_suffix = "v1"
+  }
+
+  # App-specific configurations including environment variables
+  app_configs = {
+    "app1" = {
+      max_replicas = 10
+      min_replicas = 1
       containers = [
         {
           name   = "frontend"
-          image  = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+          image  = "myregistry.azurecr.io/frontend:latest"
           cpu    = 0.5
           memory = "1Gi"
           env = [
             {
-              name  = "ENVIRONMENT"
-              value = "production"
-            },
-            {
-              name  = "API_URL"
-              value = "https://api.example.com"
+              name  = "APP_TYPE"
+              value = "frontend"
             }
           ]
         }
       ]
     },
-    "api" = {
+    "app2" = {
+      max_replicas = 5
+      min_replicas = 1
       containers = [
         {
           name   = "api"
-          image  = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+          image  = "myregistry.azurecr.io/api:latest"
           cpu    = 0.25
           memory = "0.5Gi"
           env = [
             {
-              name  = "ENVIRONMENT"
-              value = "production"
-            },
-            {
-              name  = "DB_CONNECTION"
-              value = "..."
-            },
-            {
-              name        = "DB_PASSWORD"
-              secret_name = "db-password-secret"
+              name  = "APP_TYPE"
+              value = "api"
             }
           ]
         }
       ]
     }
+  }
+
+  # Merge common settings with app-specific configs
+  container_apps = {
+    for app_name, app_config in local.app_configs : app_name => merge(local.common_settings, app_config)
   }
 }
