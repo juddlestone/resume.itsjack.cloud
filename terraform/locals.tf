@@ -47,7 +47,12 @@ locals {
             }
           ]
         }
-      ]
+      ],
+      ingress = {
+        allow_insecure_connections = false
+        external_enabled           = true
+        target_port                = 80
+      }
     },
     "backend" = {
       max_replicas = 1
