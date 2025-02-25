@@ -23,59 +23,70 @@ locals {
   }
 }
 
-locals {
-  # Common settings for all apps
-  common_settings = {
-    revision_suffix = "v1"
-  }
 
-  # App-specific configurations including environment variables
-  app_configs = {
+locals {
+  container_apps = {
     "frontend" = {
-      max_replicas = 1
-      min_replicas = 0
-      containers = [
-        {
-          name   = "ca-frontend-${local.application_name}-${local.environment}"
-          image  = "mcr.microsoft.com/k8se/quickstart:latest"
-          cpu    = 0.25
-          memory = "0.5Gi"
-          env = [
-            {
-              name  = "APP_TYPE"
-              value = "frontend"
-            }
-          ]
-        }
-      ],
+      template = {
+        revision_suffix = "v1"
+        max_replicas    = 1
+        min_replicas    = 0
+        containers = [
+          {
+            name   = "ca-frontend-${local.application_name}-${local.environment}"
+            image  = "mcr.microsoft.com/k8se/quickstart:latest"
+            cpu    = 0.25
+            memory = "0.5Gi"
+            env = [
+              {
+                name  = "APP_TYPE"
+                value = "frontend"
+              }
+            ]
+          }
+        ]
+      },
       ingress = {
         allow_insecure_connections = false
         external_enabled           = true
         target_port                = 80
+        transport                  = "http"
+        traffic_weight = [{
+          latest_revision = true
+          percentage      = 100
+        }]
       }
     },
     "backend" = {
-      max_replicas = 1
-      min_replicas = 0
-      containers = [
-        {
-          name   = "ca-backend-${local.application_name}-${local.environment}"
-          image  = "mcr.microsoft.com/k8se/quickstart:latest"
-          cpu    = 0.25
-          memory = "0.5Gi"
-          env = [
-            {
-              name  = "APP_TYPE"
-              value = "backend"
-            }
-          ]
-        }
-      ]
+      template = {
+        revision_suffix = "v1"
+        max_replicas    = 1
+        min_replicas    = 0
+        containers = [
+          {
+            name   = "ca-backend-${local.application_name}-${local.environment}"
+            image  = "mcr.microsoft.com/k8se/quickstart:latest"
+            cpu    = 0.25
+            memory = "0.5Gi"
+            env = [
+              {
+                name  = "APP_TYPE"
+                value = "backend"
+              }
+            ]
+          }
+        ]
+      },
+      ingress = {
+        allow_insecure_connections = false
+        external_enabled           = true
+        target_port                = 80
+        transport                  = "http"
+        traffic_weight = [{
+          latest_revision = true
+          percentage      = 100
+        }]
+      }
     }
-  }
-
-  # Merge common settings with app-specific configs
-  container_apps = {
-    for app_name, app_config in local.app_configs : app_name => merge(local.common_settings, app_config)
   }
 }

@@ -75,7 +75,10 @@ module "container_app" {
   container_app_environment_resource_id = module.cae.resource_id
   revision_mode                         = "Single"
 
-  template = each.value
+  template = each.value.template
+  ingress  = each.value.ingress
+
+  tags = local.tags
 }
 
 
