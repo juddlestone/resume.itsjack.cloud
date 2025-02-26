@@ -105,7 +105,8 @@ locals {
           latest_revision = true
           percentage      = 100
         }]
-      }
+      },
+      custom_domain = {}
     }
   }
 }
