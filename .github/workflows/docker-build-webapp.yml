@@ -28,7 +28,7 @@ jobs:
     - name: Build Docker image
       run: |
         date=$(date '+%Y%m%d')
-        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$date .
+        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$date app/web-app
 
     # Push Docker image to ACR
     - name: Push Docker image
