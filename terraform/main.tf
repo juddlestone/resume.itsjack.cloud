@@ -79,16 +79,44 @@ module "container_app" {
   source   = "Azure/avm-res-app-containerapp/azurerm"
   version  = "0.3.0"
 
+
   name                                  = "ca-${each.key}-${local.application_name}-${local.environment}"
   resource_group_name                   = azurerm_resource_group.this.name
   container_app_environment_resource_id = module.cae.resource_id
   revision_mode                         = "Single"
   workload_profile_name                 = "Consumption"
 
+  identity {
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.uai_function_app.id,
+    ]
+  }
+
+
   template = each.value.template
   ingress  = each.value.ingress
 
+
   custom_domains = each.value.custom_domains
+    }
+  
+resource "azurerm_user_assigned_identity" "uai_function_app" {
+  name                = local.function_app_identity_name
+  resource_group_name = azurerm_resource_group.resource_group.name
+  location            = azurerm_resource_group.resource_group.location
+}
+
+resource "azurerm_role_assignment" "function_table_contributor" {
+  scope                = azurerm_storage_account.storage_account.id
+  role_definition_name = "Storage Table Data Contributor"
+  principal_id         = azurerm_user_assigned_identity.uai_function_app.principal_id
+}
+
+resource "azurerm_cdn_frontdoor_profile" "frontdoor_profile" {
+  name                = local.frontdoor_profile_name
+  resource_group_name = azurerm_resource_group.resource_group.name
+  sku_name            = "Standard_AzureFrontDoor"
 
   tags = local.tags
 }
