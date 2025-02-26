@@ -7,8 +7,7 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    last_update = datetime.datetime.now().strftime("%B %d, %Y")
-    return render_template('index.html', last_update=last_update)
+    return render_template('index.html')
 
 @main_bp.route('/get_visitor_count')
 def get_visitor_count():
