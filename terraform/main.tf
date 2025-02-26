@@ -127,12 +127,12 @@ resource "azurerm_storage_container" "certifications" {
 
 # Upload files to Storage Container
 resource "azurerm_storage_blob" "certifications" {
-  for_each               = fileset("${path.module}/blobs/certifications", "*")
+  for_each               = fileset("${path.root}/blobs/certifications", "*")
   name                   = each.value
   storage_account_name   = azurerm_storage_account.this.name
   storage_container_name = azurerm_storage_container.certifications.name
   type                   = "Block"
-  source                 = "${path.module}/blobs/certifications/${each.value}"
+  source                 = "${path.root}/blobs/certifications/${each.value}"
 }
 
 # Storage File
