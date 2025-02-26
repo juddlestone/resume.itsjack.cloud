@@ -92,7 +92,6 @@ module "container_app" {
   tags = local.tags
 }
 
-
 # Container App - User Assigned Identity
 resource "azurerm_user_assigned_identity" "this" {
   for_each            = local.container_apps
@@ -117,6 +116,23 @@ resource "azurerm_storage_account" "this" {
   location                 = azurerm_resource_group.this.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+}
+
+# Storage Container
+resource "azurerm_storage_container" "certifications" {
+  name                  = "certifications"
+  storage_account_id    = azurerm_storage_account.this.id
+  container_access_type = "public"
+}
+
+# Upload files to Storage Container
+resource "azurerm_storage_blob" "certifications" {
+  for_each               = fileset("${path.module}/blobs/certifications", "*")
+  name                   = each.value
+  storage_account_name   = azurerm_storage_account.this.name
+  storage_container_name = azurerm_storage_container.certifications.name
+  type                   = "Block"
+  source                 = "${path.module}/blobs/certifications/${each.value}"
 }
 
 # Storage File
