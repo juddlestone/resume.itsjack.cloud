@@ -29,9 +29,8 @@ locals {
     # Frontend Container
     "frontend" = {
       template = {
-        revision_suffix = "v1"
-        max_replicas    = 1
-        min_replicas    = 0
+        max_replicas = 1
+        min_replicas = 0
         containers = [
           {
             name   = "ca-frontend-${local.application_name}-${local.environment}"
@@ -67,9 +66,8 @@ locals {
     # Backend Container
     "backend" = {
       template = {
-        revision_suffix = "v1"
-        max_replicas    = 1
-        min_replicas    = 0
+        max_replicas = 1
+        min_replicas = 0
         containers = [
           {
             name   = "ca-backend-${local.application_name}-${local.environment}"
