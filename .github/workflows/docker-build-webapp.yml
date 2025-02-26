@@ -3,7 +3,8 @@ name: Build & Push Container App Docker Image
 on:
   push: 
     paths:
-      - 'app/web-app'
+      - 'app/web-app/**'
+  workflow_dispatch:
 
 env:
   IMAGE_NAME: 'resume/frontend'
