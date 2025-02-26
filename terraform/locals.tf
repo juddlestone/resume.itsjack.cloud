@@ -87,7 +87,7 @@ locals {
           {
             name         = "visitor-data"
             storage_name = "visitor-data"
-            storage_type = "AzureFiles"
+            storage_type = "AzureFile"
           }
         ]
       },
