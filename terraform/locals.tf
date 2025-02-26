@@ -39,8 +39,8 @@ locals {
             memory = "0.5Gi"
             env = [
               {
-                name  = "APP_TYPE"
-                value = "frontend"
+                name  = "COUNTER_CONTAINER_HOSTNAME"
+                value = "ca-backend-${local.application_name}-${local.environment}"
               }
             ]
           }
