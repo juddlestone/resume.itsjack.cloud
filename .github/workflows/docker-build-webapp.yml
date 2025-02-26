@@ -22,18 +22,18 @@ jobs:
     # Log in to Azure Container Registry using docker login
     - name: Login to ACR via Docker
       run: |
-        echo ${{ secrets.ACR_SPC_USER_SECRET }} | docker login ${{ secret.ACR_NAME }}.azurecr.io -u ${{ secrets.ACR_SPC_USER_NAME }} --password-stdin
+        echo ${{ secrets.ACR_SPC_USER_SECRET }} | docker login ${{ secrets.ACR_NAME }}.azurecr.io -u ${{ secrets.ACR_SPC_USER_NAME }} --password-stdin
 
     # Build the Docker image
     - name: Build Docker image
       run: |
         date=$(date '+%Y%m%d')
-        docker build -t ${{ secret.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$date .
+        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$date .
 
     # Push Docker image to ACR
     - name: Push Docker image
       run: |
         date=$(date '+%Y%m%d')
-        docker push ${{ secret.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$date
-        docker tag ${{ secret.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$date ${{ secret.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
-        docker push ${{ secret.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$date
+        docker tag ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$date ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
