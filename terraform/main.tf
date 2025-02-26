@@ -60,6 +60,15 @@ module "cae" {
 
   zone_redundancy_enabled = false
 
+  storages = {
+    "visitor-data" = {
+      account_name = azurerm_storage_account.this.name
+      share_name   = azurerm_storage_share.this.name
+      access_key   = azurerm_storage_account.this.primary_access_key
+      access_mode  = "ReadWrite"
+    }
+  }
+
   tags = local.tags
 }
 
@@ -113,10 +122,4 @@ resource "azurerm_storage_share" "this" {
   name               = "visitor-data"
   storage_account_id = azurerm_storage_account.this.id
   quota              = "1"
-}
-
-# Storage Table
-resource "azurerm_storage_table" "this" {
-  name                 = "visitors"
-  storage_account_name = azurerm_storage_account.this.name
 }
