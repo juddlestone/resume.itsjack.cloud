@@ -106,7 +106,6 @@ locals {
           percentage      = 100
         }]
       },
-      custom_domain = {}
     }
   }
 }

@@ -84,9 +84,12 @@ module "container_app" {
   container_app_environment_resource_id = module.cae.resource_id
   revision_mode                         = "Single"
 
-  template       = each.value.template
-  ingress        = each.value.ingress
-  custom_domains = each.value.custom_domain
+  template = each.value.template
+  ingress  = each.value.ingress
+
+  custom_domains = each.value.custom_domain != null ? {
+    domain = each.value.custom_domain
+  } : {}
 
   tags = local.tags
 }
