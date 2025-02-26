@@ -57,6 +57,7 @@ locals {
         }]
       }
     },
+
     "backend" = {
       template = {
         revision_suffix = "v1"
@@ -75,11 +76,24 @@ locals {
               }
             ]
           }
+        ],
+        volume_mounts = [
+          {
+            name = "visitor-data"
+            path = "/visitor-data"
+          }
+        ],
+        volumes = [
+          {
+            name         = "visitor-data"
+            storage_name = "visitor-data"
+            storage_type = "AzureFiles"
+          }
         ]
       },
       ingress = {
         allow_insecure_connections = false
-        external_enabled           = true
+        external_enabled           = false
         target_port                = 80
         transport                  = "http"
         traffic_weight = [{
