@@ -7,7 +7,8 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    return render_template('index.html')
+    blob_endpoint = os.environ.get('BLOB_ENDPOINT')
+    return render_template('index.html', BLOB_ENDPOINT=blob_endpoint)
 
 @main_bp.route('/get_visitor_count')
 def get_visitor_count():

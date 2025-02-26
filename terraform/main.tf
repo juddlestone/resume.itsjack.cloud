@@ -133,6 +133,7 @@ resource "azurerm_storage_blob" "certifications" {
   storage_container_name = azurerm_storage_container.certifications.name
   type                   = "Block"
   source                 = "${path.root}/blobs/certifications/${each.value}"
+  content_type           = "image/png"
 }
 
 # Storage File

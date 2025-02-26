@@ -41,6 +41,10 @@ locals {
               {
                 name  = "COUNTER_CONTAINER_HOSTNAME"
                 value = "ca-backend-${local.application_name}-${local.environment}"
+              },
+              {
+                name  = "BLOB_ENDPOINT"
+                value = azurerm_storage_account.this.primary_blob_endpoint
               }
             ]
           }
