@@ -83,6 +83,7 @@ module "container_app" {
   resource_group_name                   = azurerm_resource_group.this.name
   container_app_environment_resource_id = module.cae.resource_id
   revision_mode                         = "Single"
+  workload_profile_name                 = "Consumption"
 
   template = each.value.template
   ingress  = each.value.ingress
