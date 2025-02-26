@@ -26,6 +26,7 @@ locals {
 
 locals {
   container_apps = {
+    # Frontend Container
     "frontend" = {
       template = {
         revision_suffix = "v1"
@@ -55,9 +56,13 @@ locals {
           latest_revision = true
           percentage      = 100
         }]
+      },
+      custom_domain = {
+        name = var.custom_domain
       }
     },
 
+    # Backend Container
     "backend" = {
       template = {
         revision_suffix = "v1"
