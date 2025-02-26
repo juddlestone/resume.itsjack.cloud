@@ -1,11 +1,14 @@
 name: Build & Push Container App Docker Image
 
-on:
-  push: 
+on: 
+  push:
+    branches:
+     - main
+     - dev
     paths:
       - 'app/web-app/**'
   workflow_dispatch:
-
+    
 env:
   IMAGE_NAME: 'resume/frontend'
 
