@@ -122,7 +122,7 @@ resource "azurerm_storage_account" "this" {
 resource "azurerm_storage_container" "certifications" {
   name                  = "certifications"
   storage_account_id    = azurerm_storage_account.this.id
-  container_access_type = "public"
+  container_access_type = "container"
 }
 
 # Upload files to Storage Container
