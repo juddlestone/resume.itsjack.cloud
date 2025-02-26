@@ -62,7 +62,8 @@ locals {
       },
       custom_domains = {
         domain = {
-          name = var.custom_domain
+          name                     = var.custom_domain
+          certificate_binding_type = "SniEnabled"
         }
       }
     },

@@ -1,0 +1,35 @@
+name: Build & Push Container App Docker Image
+
+on:
+  push: 
+    paths:
+      - 'app/web-app'
+
+env:
+  IMAGE_NAME: 'resume/frontend'
+
+jobs:
+  build-and-publish-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v3
+
+    # Log in to Azure Container Registry using docker login
+    - name: Login to ACR via Docker
+      run: |
+        echo ${{ secrets.ACR_SPC_USER_SECRET }} | docker login ${{ secret.ACR_NAME }}.azurecr.io -u ${{ secrets.ACR_SPC_USER_NAME }} --password-stdin
+
+    # Build the Docker image
+    - name: Build Docker image
+      run: |
+        date=$(date '+%Y%m%d')
+        docker build -t ${{ secret.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$date .
+
+    # Push Docker image to ACR
+    - name: Push Docker image
+      run: |
+        date=$(date '+%Y%m%d')
+        docker push ${{ secret.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$date
+        docker tag ${{ secret.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$date ${{ secret.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+        docker push ${{ secret.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest

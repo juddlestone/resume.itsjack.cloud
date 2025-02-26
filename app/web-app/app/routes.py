@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, jsonify
 import os
-import datetime
 import requests
 
 main_bp = Blueprint('main', __name__)
