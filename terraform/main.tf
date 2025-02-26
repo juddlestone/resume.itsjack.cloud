@@ -87,9 +87,7 @@ module "container_app" {
   template = each.value.template
   ingress  = each.value.ingress
 
-  custom_domains = each.value.custom_domain != null ? {
-    domain = each.value.custom_domain
-  } : {}
+  custom_domains = each.value.custom_domains
 
   tags = local.tags
 }

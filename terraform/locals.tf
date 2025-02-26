@@ -57,8 +57,10 @@ locals {
           percentage      = 100
         }]
       },
-      custom_domain = {
-        name = var.custom_domain
+      custom_domains = {
+        domain = {
+          name = var.custom_domain
+        }
       }
     },
 
@@ -106,6 +108,7 @@ locals {
           percentage      = 100
         }]
       },
+      custom_domains = {}
     }
   }
 }
