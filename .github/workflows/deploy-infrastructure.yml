@@ -54,7 +54,7 @@ jobs:
         
     - name: Terraform Plan
       id: plan
-      run: terraform plan -no-color -input=false -var-file=environments/${TF_WORKSPACE}.tfvars
+      run: terraform plan -no-color -input=false -var container_registry_resource_id=${{secrets.ACR_RESOURCE_ID}} -var-file=environments/${TF_WORKSPACE}.tfvars
       continue-on-error: true
       
     - name: Update Pull Request
@@ -119,4 +119,4 @@ jobs:
         -backend-config="key=${TF_WORKSPACE}.tfstate"
       
     - name: Terraform Apply
-      run: terraform apply -var-file=environments/${TF_WORKSPACE}.tfvars -auto-approve
+      run: terraform apply -var container_registry_resource_id=${{secrets.ACR_RESOURCE_ID}} -var-file=environments/${TF_WORKSPACE}.tfvars -auto-approve
