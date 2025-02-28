@@ -30,10 +30,10 @@ jobs:
         date=$(date '+%Y%m%d')
         docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/resume/${{ env.IMAGE_NAME }}:$date app/web-app
 
-    # Push Docker image to ACR
-    - name: Push Docker image
-      run: |
-        date=$(date '+%Y%m%d')
-        docker push ${{ secrets.ACR_NAME }}.azurecr.io/resume/${{ env.IMAGE_NAME }}:$date
-        docker tag ${{ secrets.ACR_NAME }}.azurecr.io/resume/${{ env.IMAGE_NAME }}:$date ${{ secrets.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+    # Push Docker image to ACR     
+    - name: Push Docker image       
+      run: |         
+        date=$(date '+%Y%m%d')         
+        docker push ${{ secrets.ACR_NAME }}.azurecr.io/resume/${{ env.IMAGE_NAME }}:$date         
+        docker tag ${{ secrets.ACR_NAME }}.azurecr.io/resume/${{ env.IMAGE_NAME }}:$date ${{ secrets.ACR_NAME }}.azurecr.io/resume/${{ env.IMAGE_NAME }}:latest         
         docker push ${{ secrets.ACR_NAME }}.azurecr.io/resume/${{ env.IMAGE_NAME }}:latest
