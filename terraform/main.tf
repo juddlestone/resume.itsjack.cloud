@@ -94,10 +94,12 @@ module "container_app" {
     user_assigned_resource_ids = [azurerm_user_assigned_identity.this[each.key].id]
   }
 
-  registries = {
-    identity = azurerm_user_assigned_identity.this[each.key].resource_id
-    server   = "acrmanacr.azurecr.io"
-  }
+  registries = [
+    {
+      identity = azurerm_user_assigned_identity.this[each.key].resource_id
+      server   = "acrmanacr.azurecr.io"
+    }
+  ]
 
   tags = local.tags
 }
