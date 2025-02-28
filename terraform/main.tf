@@ -90,6 +90,15 @@ module "container_app" {
 
   custom_domains = each.value.custom_domains
 
+  managed_identities = {
+    user_assigned_resource_ids = [azurerm_user_assigned_identity.this[each.key].id]
+  }
+
+  registries = {
+    identity = azurerm_user_assigned_identity.this[each.key].resource_id
+    server   = "acrmanacr.azurecr.io"
+  }
+
   tags = local.tags
 }
 
