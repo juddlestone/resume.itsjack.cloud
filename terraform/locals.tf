@@ -34,7 +34,7 @@ locals {
         containers = [
           {
             name   = "ca-frontend-${local.application_name}-${local.environment}"
-            image  = "resume/frontend:latest"
+            image  = "mcr.microsoft.com/k8se/quickstart:latest"
             cpu    = 0.25
             memory = "0.5Gi"
             env = [
