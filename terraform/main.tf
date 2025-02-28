@@ -96,7 +96,7 @@ module "container_app" {
 
   registries = [
     {
-      identity = azurerm_user_assigned_identity.this[each.key].resource_id
+      identity = azurerm_user_assigned_identity.this[each.key].id
       server   = "acrmanacr.azurecr.io"
     }
   ]
