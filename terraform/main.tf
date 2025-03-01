@@ -103,8 +103,8 @@ module "container_app" {
     ],
 
     volume_mount = {
-      name       = "visitor-data"
-      mount_path = "/visitor-data"
+      name = "visitor-data"
+      path = "/visitor-data"
     }
 
     volumes = [
