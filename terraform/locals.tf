@@ -44,7 +44,7 @@ locals {
               },
               {
                 name  = "BLOB_ENDPOINT"
-                value = azurerm_storage_account.this.primary_blob_endpoint
+                value = "${azurerm_storage_account.this.primary_blob_endpoint}certifications/"
               }
             ]
           }
