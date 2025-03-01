@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: 'frontend'
 
 jobs:
-  build-and-publish-docker-image:
+  build-and-publish-frontend-docker-image:
     runs-on: ubuntu-latest
     steps:
     - name: 'Checkout GitHub Action'
