@@ -141,7 +141,7 @@ module "container_app" {
   registries = [
     {
       identity = azurerm_user_assigned_identity.this[each.key].id
-      server   = "acrmanacr.azurecr.io"
+      server   = local.container_registry_url
     }
   ]
 
@@ -150,7 +150,7 @@ module "container_app" {
 
 # Container App - User Assigned Identity
 resource "azurerm_user_assigned_identity" "this" {
-  name                = local.user_assigned_identity.name
+  name                = local.user_assigned_identity_name
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
 }

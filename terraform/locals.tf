@@ -5,6 +5,7 @@ locals {
   location                        = var.location
 
   container_registry_resource_id = var.container_registry_resource_id
+  container_registry_url         = "acrmanacr.azurecr.io"
 
   container_app_environment_name = module.naming.container_app_environment.name
   log_analytics_workspace_name   = module.naming.log_analytics_workspace.name
