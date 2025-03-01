@@ -12,7 +12,7 @@ resource "time_static" "this" {}
 # Resource Group
 # Where all resources will be created
 resource "azurerm_resource_group" "this" {
-  name     = local.resource_group_name
+  name     = module.naming.resource_group.name
   location = local.location
 
   tags = local.tags
@@ -41,7 +41,7 @@ resource "azurerm_consumption_budget_resource_group" "this" {
 # Log Analytics Workspace
 # Used to collect logs from the container app
 resource "azurerm_log_analytics_workspace" "law" {
-  name                = local.log_analytics_workspace_name
+  name                = module.naming.log_analytics_workspace.name
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
   sku                 = "PerGB2018"
@@ -56,7 +56,7 @@ module "cae" {
   source  = "Azure/avm-res-app-managedenvironment/azurerm"
   version = "0.2.1"
 
-  name                    = local.container_app_environment_name
+  name                    = module.naming.container_app_environment.name
   resource_group_name     = azurerm_resource_group.this.name
   location                = azurerm_resource_group.this.location
   zone_redundancy_enabled = false
@@ -94,7 +94,7 @@ module "container_app" {
     containers = [
       {
         name   = module.naming.container_app.name
-        image  = "acrmanacr.azurecr.io/resume/frontend:${var.frontend_version}"
+        image  = local.container_image
         cpu    = 0.25
         memory = "0.5Gi"
         env = [
@@ -102,7 +102,7 @@ module "container_app" {
             # This is the endpoint to the storage account
             # It is used to access the certification pictures, keeping docker image small
             name  = "BLOB_ENDPOINT"
-            value = "${azurerm_storage_account.this.primary_blob_endpoint}certifications/"
+            value = local.blob_endpoint
           }
         ]
         volume_mounts = [
@@ -167,7 +167,7 @@ module "container_app" {
 # Container App - User Assigned Identity
 # This is used to access the ACR
 resource "azurerm_user_assigned_identity" "this" {
-  name                = local.user_assigned_identity_name
+  name                = module.naming.user_assigned_identity.name
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
 }
