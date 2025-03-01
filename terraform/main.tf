@@ -99,13 +99,16 @@ module "container_app" {
             value = "${azurerm_storage_account.this.primary_blob_endpoint}certifications/"
           }
         ]
+        volume_mounts = [
+          {
+            name = "visitor-data"
+            path = "/visitor-data"
+          }
+        ]
       }
     ],
 
-    volume_mount = {
-      name = "visitor-data"
-      path = "/visitor-data"
-    }
+
 
     volumes = [
       {
