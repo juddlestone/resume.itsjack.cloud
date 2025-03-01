@@ -39,8 +39,8 @@ locals {
             memory = "0.5Gi"
             env = [
               {
-                name  = "COUNTER_CONTAINER_HOSTNAME"
-                value = "ca-backend-${local.application_name}-${local.environment}"
+                name  = "BACKEND_CONTAINER"
+                value = "http://ca-backend-${local.application_name}-${local.environment}"
               },
               {
                 name  = "BLOB_ENDPOINT"

@@ -11,7 +11,7 @@ def index():
 
 @main_bp.route('/get_visitor_count')
 def get_visitor_count():
-    counter_url = os.environ.get('COUNTER_CONTAINER_HOSTNAME')
+    counter_url = os.environ.get('BACKEND_ENDPOINT') + '/api/count'
     try:
         response = requests.get(counter_url)
         if response.status_code == 200:
