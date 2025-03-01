@@ -101,12 +101,12 @@ module "container_app" {
         ]
       }
     ],
-    volume_mounts = [
-      {
-        name       = "visitor-data"
-        mount_path = "/visitor-data"
-      }
-    ],
+
+    volume_mount = {
+      name       = "visitor-data"
+      mount_path = "/visitor-data"
+    }
+
     volumes = [
       {
         name         = "visitor-data"
