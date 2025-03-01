@@ -34,7 +34,7 @@ locals {
         containers = [
           {
             name   = "ca-frontend-${local.application_name}-${local.environment}"
-            image  = "mcr.microsoft.com/k8se/quickstart:latest"
+            image  = "acrmanacr.azurecr.io/resume/frontend:${var.frontend_version}"
             cpu    = 0.25
             memory = "0.5Gi"
             env = [
@@ -53,7 +53,7 @@ locals {
       ingress = {
         allow_insecure_connections = false
         external_enabled           = true
-        target_port                = 80
+        target_port                = 5000
         transport                  = "http"
         traffic_weight = [{
           latest_revision = true

@@ -17,3 +17,9 @@ variable "container_registry_resource_id" {
   description = "The ID of the container registry to use"
   type        = string
 }
+
+variable "frontend_version" {
+  description = "The version of the frontend container to deploy"
+  type        = string
+  default     = "latest"
+}
