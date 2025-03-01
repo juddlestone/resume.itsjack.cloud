@@ -75,23 +75,67 @@ module "cae" {
 
 # Container App
 module "container_app" {
-  for_each = local.container_apps
-  source   = "Azure/avm-res-app-containerapp/azurerm"
-  version  = "0.3.0"
+  source  = "Azure/avm-res-app-containerapp/azurerm"
+  version = "0.3.0"
 
-  name                                  = "ca-${each.key}-${local.application_name}-${local.environment}"
+  name                                  = module.naming.container_app.name
   resource_group_name                   = azurerm_resource_group.this.name
   container_app_environment_resource_id = module.cae.resource_id
   revision_mode                         = "Single"
   workload_profile_name                 = "Consumption"
 
-  template = each.value.template
-  ingress  = each.value.ingress
+  template = {
+    max_replicas = 1
+    min_replicas = 0
+    containers = [
+      {
+        name   = module.naming.container_app.name
+        image  = "acrmanacr.azurecr.io/resume/frontend:${var.frontend_version}"
+        cpu    = 0.25
+        memory = "0.5Gi"
+        env = [
+          {
+            name  = "BLOB_ENDPOINT"
+            value = "${azurerm_storage_account.this.primary_blob_endpoint}certifications/"
+          }
+        ]
+      }
+    ],
+    volume_mounts = [
+      {
+        name       = "visitor-data"
+        mount_path = "/visitor-data"
+      }
+    ],
+    volumes = [
+      {
+        name         = "visitor-data"
+        storage_name = "visitor-data"
+        storage_type = "AzureFile"
+      }
+    ]
+  }
 
-  custom_domains = each.value.custom_domains
+  ingress = {
+    allow_insecure_connections = false
+    external_enabled           = true
+    target_port                = 5000
+    transport                  = "http"
+    traffic_weight = [{
+      latest_revision = true
+      percentage      = 100
+    }]
+  }
+
+  custom_domains = {
+    domain = {
+      name                     = var.custom_domain
+      certificate_binding_type = "SniEnabled"
+    }
+  }
 
   managed_identities = {
-    user_assigned_resource_ids = [azurerm_user_assigned_identity.this[each.key].id]
+    user_assigned_resource_ids = [azurerm_user_assigned_identity.this.id]
   }
 
   registries = [
@@ -106,8 +150,7 @@ module "container_app" {
 
 # Container App - User Assigned Identity
 resource "azurerm_user_assigned_identity" "this" {
-  for_each            = local.container_apps
-  name                = "uai-${each.key}-${local.application_name}-${local.environment}"
+  name                = local.user_assigned_identity.name
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
 }
@@ -115,10 +158,9 @@ resource "azurerm_user_assigned_identity" "this" {
 
 # Container App - ACR Pull
 resource "azurerm_role_assignment" "acrpull" {
-  for_each             = local.container_apps
   scope                = local.container_registry_resource_id
   role_definition_name = "AcrPull"
-  principal_id         = azurerm_user_assigned_identity.this[each.key].principal_id
+  principal_id         = azurerm_user_assigned_identity.this.principal_id
 }
 
 # Storage Account
