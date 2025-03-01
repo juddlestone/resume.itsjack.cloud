@@ -11,12 +11,32 @@ def index():
 
 @main_bp.route('/get_visitor_count')
 def get_visitor_count():
-    counter_url = 'http://' + os.environ.get('BACKEND_ENDPOINT') + '/api/count'
-    try:
-        response = requests.get(counter_url)
-        if response.status_code == 200:
-            return jsonify(response.json())
-        else:
-            return jsonify({"error": "Failed to retrieve count", "count": 0})
-    except Exception as e:
-        return jsonify({"error": str(e), "count": 0})
+    backend_endpoint = os.environ.get('BACKEND_ENDPOINT')
+    if not backend_endpoint:
+        return jsonify({"error": "Backend endpoint not configured", "count": 0})
+    
+    counter_url = f"http://{backend_endpoint}/api/count"
+    
+    # Retry logic
+    max_retries = 3
+    retry_delay = 2  # seconds
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(counter_url, timeout=10)
+            if response.status_code == 200:
+                return jsonify(response.json())
+            
+            # If we got a non-200 status, wait and retry
+            if attempt < max_retries - 1:
+                time.sleep(retry_delay)
+                continue
+                
+            return jsonify({"error": f"Failed to retrieve count: Status {response.status_code}", "count": 0})
+        
+        except Exception as e:
+            if attempt < max_retries - 1:
+                time.sleep(retry_delay)
+                continue
+            
+            return jsonify({"error": str(e), "count": 0})
