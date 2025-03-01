@@ -140,7 +140,7 @@ module "container_app" {
 
   registries = [
     {
-      identity = azurerm_user_assigned_identity.this[each.key].id
+      identity = azurerm_user_assigned_identity.this.id
       server   = local.container_registry_url
     }
   ]
