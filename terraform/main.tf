@@ -161,7 +161,6 @@ module "container_app" {
       server   = local.container_registry_url
     }
   ]
-
   tags = local.tags
 }
 
