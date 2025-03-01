@@ -76,7 +76,7 @@ locals {
         containers = [
           {
             name   = "ca-backend-${local.application_name}-${local.environment}"
-            image  = "mcr.microsoft.com/k8se/quickstart:latest"
+            image  = "acrmanacr.azurecr.io/resume/backend:${var.backend_version}"
             cpu    = 0.25
             memory = "0.5Gi"
             env = [

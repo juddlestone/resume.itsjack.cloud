@@ -1,4 +1,4 @@
-name: Build & Push WebApp
+name: Build & Push CounterApp 
 
 on: 
   push:
@@ -6,11 +6,11 @@ on:
      - main
      - dev
     paths:
-      - 'app/web-app/**'
+      - 'app/counter-app/**'
   workflow_dispatch:
     
 env:
-  IMAGE_NAME: 'frontend'
+  IMAGE_NAME: 'backend'
 
 jobs:
   build-and-publish-docker-image:
@@ -28,7 +28,7 @@ jobs:
     - name: Build Docker image
       run: |
         date=$(date '+%Y%m%d')
-        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/resume/${{ env.IMAGE_NAME }}:$date app/web-app
+        docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/resume/${{ env.IMAGE_NAME }}:$date app/counter-app
 
     # Push Docker image to ACR     
     - name: Push Docker image       

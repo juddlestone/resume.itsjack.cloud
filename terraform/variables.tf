@@ -23,3 +23,9 @@ variable "frontend_version" {
   type        = string
   default     = "latest"
 }
+
+variable "backend_version" {
+  description = "The version of the backend container to deploy"
+  type        = string
+  default     = "latest"
+}
