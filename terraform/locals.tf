@@ -6,6 +6,7 @@ locals {
 
 
   container_registry_resource_id = var.container_registry_resource_id
+  container_registry_url         = "acrmanacr.azurecr.io"
 
   app_service_plan_name      = module.naming.app_service_plan.name
   function_app_name          = module.naming.function_app.name
@@ -29,98 +30,5 @@ locals {
     "Criticality"  = "Low"
     "ServiceName"  = "CloudResume"
     "ServiceOwner" = "jack@itsjack.cloud"
-  }
-}
-
-
-locals {
-  container_apps = {
-    # Frontend Container
-    "frontend" = {
-      template = {
-        max_replicas = 1
-        min_replicas = 0
-        containers = [
-          {
-            name   = "ca-frontend-${local.application_name}-${local.environment}"
-            image  = "mcr.microsoft.com/k8se/quickstart:latest"
-            cpu    = 0.25
-            memory = "0.5Gi"
-            env = [
-              {
-                name  = "COUNTER_CONTAINER_HOSTNAME"
-                value = "ca-backend-${local.application_name}-${local.environment}"
-              },
-              {
-                name  = "BLOB_ENDPOINT"
-                value = azurerm_storage_account.this.primary_blob_endpoint
-              }
-            ]
-          }
-        ]
-      },
-      ingress = {
-        allow_insecure_connections = false
-        external_enabled           = true
-        target_port                = 80
-        transport                  = "http"
-        traffic_weight = [{
-          latest_revision = true
-          percentage      = 100
-        }]
-      },
-      custom_domains = {
-        domain = {
-          name                     = var.custom_domain
-          certificate_binding_type = "SniEnabled"
-        }
-      }
-    },
-
-    # Backend Container
-    "backend" = {
-      template = {
-        max_replicas = 1
-        min_replicas = 0
-        containers = [
-          {
-            name   = "ca-backend-${local.application_name}-${local.environment}"
-            image  = "mcr.microsoft.com/k8se/quickstart:latest"
-            cpu    = 0.25
-            memory = "0.5Gi"
-            env = [
-              {
-                name  = "APP_TYPE"
-                value = "backend"
-              }
-            ]
-          }
-        ],
-        volume_mounts = [
-          {
-            name = "visitor-data"
-            path = "/visitor-data"
-          }
-        ],
-        volumes = [
-          {
-            name         = "visitor-data"
-            storage_name = "visitor-data"
-            storage_type = "AzureFile"
-          }
-        ]
-      },
-      ingress = {
-        allow_insecure_connections = false
-        external_enabled           = false
-        target_port                = 80
-        transport                  = "http"
-        traffic_weight = [{
-          latest_revision = true
-          percentage      = 100
-        }]
-      },
-      custom_domains = {}
-    }
   }
 }

@@ -71,7 +71,7 @@ function fetchVisitorCount() {
                 counterElement.textContent = 'Visitor count unavailable';
                 console.error('Error fetching visitor count:', data.error);
             } else {
-                counterElement.textContent = `You are visitor #${data.count}`;
+                counterElement.textContent = `${data.count}`;
             }
         })
         .catch(error => {
