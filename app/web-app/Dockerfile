@@ -8,9 +8,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENV FLASK_APP=wsgi.py
-ENV FLASK_DEBUG=False
+ENV DEBUG=False
 
 EXPOSE 5000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:app"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
