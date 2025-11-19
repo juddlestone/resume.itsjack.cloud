@@ -38,6 +38,12 @@ resource "azurerm_consumption_budget_resource_group" "this" {
   }
 }
 
+resource "azurerm_static_web_app" "this" {
+  name                = module.naming.static_web_app.name
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+}
+
 # Log Analytics Workspace
 # Used to collect logs from the container app
 resource "azurerm_log_analytics_workspace" "law" {
